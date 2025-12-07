@@ -8,5 +8,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './navbar.css',
 })
 export class Navbar {
-
+  irInicio(){
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
 }

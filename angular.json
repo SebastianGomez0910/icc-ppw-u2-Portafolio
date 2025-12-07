@@ -11,6 +11,8 @@
       "prefix": "app",
       "architect": {
         "build": {
+          "baseHref": "/icc-ppw-u2-Portafolio/",
+          "deployUrl": "/icc-ppw-u2-Portafolio/",
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
