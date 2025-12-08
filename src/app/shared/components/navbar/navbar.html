@@ -1,17 +1,77 @@
 <div class="navbar bg-base-100 shadow-md fixed top-0 w-full z-50">
+  
   <div class="flex-1">
-    <a routerLink="/home" 
-    (click)="irInicio()"
-    class="btn btn-ghost text-xl">Portafolio</a>
+    @if (isAdmin) {
+      <a routerLink="/admin" class="btn btn-ghost text-xl text-red-500 font-bold">Panel Admin</a>
+    } @else {
+      <a routerLink="/home" (click)="irInicio()" class="btn btn-ghost text-xl">Portafolio</a>
+    }
   </div>
 
   <div class="flex-none">
-    <ul class="menu menu-horizontal px-1">
-      <li><a routerLink="/home" (click)="irInicio()">Inicio</a></li>
-      <li><a routerLink="/programadores">Programadores</a></li>
-      <li><a routerLink="/asesorias">Asesorías</a></li>
-      <li><a routerLink="/login">Login</a></li>
+    <ul class="menu menu-horizontal px-1 items-center">
+
+      @if (isAdmin) {
+        
+        <li><a routerLink="/admin/users" class="font-bold">👥 Gestionar Usuarios</a></li>
+        <li><a class="font-bold">📊 Estadísticas</a></li>
+        <li><a routerLink="/home" class="text-gray-400 text-xs">Ver Web Pública</a></li>
+
+      } @else if (isProgramer) {
+
+        <li><a routerLink="/programmer/projects">Mis Proyectos</a></li>
+        <li><a routerLink="/programmer/appointments">Mis Citas</a></li>
+        <li><a routerLink="/home" (click)="irInicio()">Inicio</a></li>
+
+      } @else {
+
+        <li><a routerLink="/home" (click)="irInicio()">Inicio</a></li>
+        <li><a routerLink="/programadores">Programadores</a></li>
+        <li><a routerLink="/asesorias">Asesorías</a></li>
+
+      }
+
+      @if (AuthService.currentUser()) {
+        
+        <li class="ml-2">
+          <div class="dropdown dropdown-end">
+            
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+              <div class="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                <img [src]="AuthService.currentUser()?.photoURL || 'https://www.todofondos.net/wp-content/uploads/mas-de-74-fondos-de-pantalla-de-solid-green.-fondo-para-computadora-hd-1080p-verde-liso.jpg'" alt="Avatar"/>
+              </div>
+            </div>
+
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+              <li class="menu-title px-4 py-2 text-xs text-gray-500">
+                {{ AuthService.currentUser()?.email }}
+              </li>
+              
+              @if (!isAdmin && !isProgramer) {
+                <li>
+                  <button (click)="solicitarRol()" class="text-yellow-600 font-bold">
+                    Solicitar rol Programador
+                  </button>
+                </li>
+              }
+
+              <div class="divider my-0"></div>
+              
+              <li><button (click)="logout()" class="text-red-500 font-bold">Cerrar Sesión</button></li>
+            </ul>
+
+          </div>
+        </li>
+
+      } @else {
+
+        <li>
+          <a routerLink="/login" class="btn btn-primary btn-sm text-white ml-2 shadow-lg border-none">
+            Ingresar
+          </a>
+        </li>
+
+      }
     </ul>
   </div>
 </div>
-
