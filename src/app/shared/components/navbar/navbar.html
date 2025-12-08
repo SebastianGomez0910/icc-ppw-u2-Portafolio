@@ -3,7 +3,9 @@
   <div class="flex-1">
     @if (isAdmin) {
       <a routerLink="/admin" class="btn btn-ghost text-xl text-red-500 font-bold">Panel Admin</a>
-    } @else {
+    } 
+    
+    @else {
       <a routerLink="/home" (click)="irInicio()" class="btn btn-ghost text-xl">Portafolio</a>
     }
   </div>
@@ -13,8 +15,13 @@
 
       @if (isAdmin) {
         
-        <li><a routerLink="/admin/users" class="font-bold">👥 Gestionar Usuarios</a></li>
-        <li><a class="font-bold">📊 Estadísticas</a></li>
+        <li>
+          <a routerLink="/admin" class="font-bold flex gap-2 items-center">
+            Gestionar Roles
+          </a>
+        </li>
+        
+        <li><a class="font-bold">Gestion Programadores</a></li>
         <li><a routerLink="/home" class="text-gray-400 text-xs">Ver Web Pública</a></li>
 
       } @else if (isProgramer) {
@@ -26,7 +33,7 @@
       } @else {
 
         <li><a routerLink="/home" (click)="irInicio()">Inicio</a></li>
-        <li><a routerLink="/programadores">Programadores</a></li>
+        <li><a routerLink="/programadores">Proyectos</a></li>
         <li><a routerLink="/asesorias">Asesorías</a></li>
 
       }

@@ -1,15 +1,14 @@
 import { inject, Injectable } from '@angular/core';
-import { User } from '@angular/fire/auth'; // <--- OJO: Quité UserProfile de aquí
+import { User } from '@angular/fire/auth'; 
 import { collection, doc, Firestore, getDoc, getDocs, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
 
-// 1. DEFINIMOS TU INTERFAZ CORRECTA (Y la exportamos)
 export interface UserProfile {
   uid: string;
   email: string;
-  displayName?: string; // Corregido: displayNmae -> displayName
+  displayName?: string; 
   photoURL?: string;
-  role: 'admin' | 'programmer' | 'user'; // Unificado a inglés: 'programmer'
-  requestingProgrammerRole?: boolean;    // Unificado a inglés y opcional
+  role: 'admin' | 'programmer' | 'user'; 
+  requestingProgrammerRole?: boolean;    
 }
 
 @Injectable({
@@ -23,7 +22,6 @@ export class UserService {
     const userSnap = await getDoc(userRef);
 
     if (!userSnap.exists()) {
-      // SI ES NUEVO
       const newUser: UserProfile = {
         uid: user.uid,
         email: user.email || '',
@@ -34,7 +32,6 @@ export class UserService {
       };
       return setDoc(userRef, newUser);
     } else {
-      // SI YA EXISTE (Actualizamos datos básicos)
       return updateDoc(userRef, {
         displayName: user.displayName,
         photoURL: user.photoURL,
@@ -50,7 +47,6 @@ export class UserService {
     });
   }
 
-  // Ahora esta función usa TU interfaz UserProfile, no la de Firebase
   async getPendingRequests(): Promise<UserProfile[]> {
     const usersRef = collection(this.firestore, 'users');
     const q = query(usersRef, where('requestingProgrammerRole', '==', true));
@@ -59,7 +55,6 @@ export class UserService {
     const users: UserProfile[] = [];
     
     querySnapshot.forEach((doc) => {
-      // Forzamos el tipo a UserProfile
       users.push(doc.data() as UserProfile);
     });
     
@@ -81,14 +76,13 @@ export class UserService {
     });
   }
 
-  async getUserById(uid:string):Promise<UserProfile | null >{
-    const userRef= doc(this.firestore, `users/{uid}`);
-    const snap=await getDoc(userRef);
+  async getUserById(uid: string): Promise<UserProfile | null> {
+    const userRef = doc(this.firestore, `users/${uid}`); 
+    const snap = await getDoc(userRef);
 
-    if(snap.exists()){
-      return snap.data() as UserProfile
-    }
-    else {
+    if (snap.exists()) {
+      return snap.data() as UserProfile;
+    } else {
       return null;
     }
   }
