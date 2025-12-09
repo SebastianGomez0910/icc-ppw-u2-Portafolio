@@ -4,7 +4,9 @@
     @if (isAdmin) {
       <a routerLink="/admin" class="btn btn-ghost text-xl text-red-500 font-bold">Panel Admin</a>
     } 
-    
+    @else if (isProgramer) {
+      <a routerLink="/programmer" class="btn btn-ghost text-xl text-yellow-500 font-bold">Panel Programador</a>
+    }
     @else {
       <a routerLink="/home" (click)="irInicio()" class="btn btn-ghost text-xl">Portafolio</a>
     }
@@ -16,12 +18,10 @@
       @if (isAdmin) {
         
         <li>
-          <a routerLink="/admin" class="font-bold flex gap-2 items-center">
-            Gestionar Roles
+          <a routerLink="/admin" class="font-bold flex gap-2 items-center text-primary">
+            👥 Gestionar Roles
           </a>
         </li>
-        
-        <li><a class="font-bold">Gestion Programadores</a></li>
         <li><a routerLink="/home" class="text-gray-400 text-xs">Ver Web Pública</a></li>
 
       } @else if (isProgramer) {
@@ -54,14 +54,6 @@
                 {{ AuthService.currentUser()?.email }}
               </li>
               
-              @if (!isAdmin && !isProgramer) {
-                <li>
-                  <button (click)="solicitarRol()" class="text-yellow-600 font-bold">
-                    Solicitar rol Programador
-                  </button>
-                </li>
-              }
-
               <div class="divider my-0"></div>
               
               <li><button (click)="logout()" class="text-red-500 font-bold">Cerrar Sesión</button></li>

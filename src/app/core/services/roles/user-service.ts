@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { User } from '@angular/fire/auth'; 
-import { collection, doc, Firestore, getDoc, getDocs, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
+import { collection, doc, Firestore, getDoc, getDocs, query, setDoc, updateDoc, where, orderBy, deleteDoc } from '@angular/fire/firestore';
 
 export interface UserProfile {
   uid: string;
@@ -85,5 +85,31 @@ export class UserService {
     } else {
       return null;
     }
+  }
+
+  async getAllUsers(): Promise<UserProfile[]> {
+    const usersRef = collection(this.firestore, 'users');
+    const q = query(usersRef, orderBy('email'));
+    
+    const querySnapshot = await getDocs(q);
+    const users: UserProfile[] = [];
+    
+    querySnapshot.forEach((doc) => {
+      users.push(doc.data() as UserProfile);
+    });
+    return users;
+  }
+
+  updateRole(uid: string, newRole: 'admin' | 'programmer' | 'user') {
+    const userRef = doc(this.firestore, `users/${uid}`);
+    return updateDoc(userRef, {
+      role: newRole,
+      requestingProgrammerRole: false 
+    });
+  }
+
+  deleteUser(uid: string) {
+    const userRef = doc(this.firestore, `users/${uid}`);
+    return deleteDoc(userRef);
   }
 }

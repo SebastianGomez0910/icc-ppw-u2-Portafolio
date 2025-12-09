@@ -15,7 +15,7 @@ export class ManageUsers implements OnInit {
   private userService = inject(UserService);
   private cd=inject(ChangeDetectorRef)
   
-  pendingUsers: UserProfile[] = [];
+  allUsers: UserProfile[] = [];
   isLoading = true;
 
   ngOnInit() {
@@ -29,11 +29,11 @@ export class ManageUsers implements OnInit {
     try {
       // 1. Llamamos al servicio
       console.log('Consultando a Firebase...');
-      this.pendingUsers = await this.userService.getPendingRequests();
+      this.allUsers = await this.userService.getAllUsers();
       
       // 2. Vemos qué llegó
-      console.log('Respuesta recibida. Usuarios encontrados:', this.pendingUsers.length);
-      console.log('Datos:', this.pendingUsers);
+      console.log('Respuesta recibida. Usuarios encontrados:', this.allUsers.length);
+      console.log('Datos:', this.allUsers);
 
     } catch (error) {
       // 3. Si falla, nos dirá por qué
@@ -75,6 +75,42 @@ export class ManageUsers implements OnInit {
       }
     } else {
       console.log('Cancelado por el administrador.');
+    }
+  }
+
+  async cambiarRol(user: UserProfile, nuevoRol: 'admin' | 'programmer' | 'user') {
+    // Protección para no quitarte el admin a ti mismo por error
+    if (user.role === 'admin' && nuevoRol !== 'admin') {
+      if (!confirm('⚠️ CUIDADO: Estás a punto de quitarle el rol de Admin a este usuario. ¿Seguro?')) {
+        return;
+      }
+    }
+
+    try {
+      await this.userService.updateRole(user.uid, nuevoRol);
+      alert(`Rol actualizado a: ${nuevoRol.toUpperCase()}`);
+      this.loadRequests(); // Recargamos la lista para ver el cambio
+    } catch (error) {
+      console.error(error);
+      alert('Error al actualizar rol');
+    }
+  }
+
+  async eliminarUsuario(user: UserProfile) {
+    const confirmacion = confirm(`⚠️ ¿Estás seguro de ELIMINAR a ${user.email}?\n\nEsta acción no se puede deshacer.`);
+    
+    if (!confirmacion) return;
+
+    try {
+      await this.userService.deleteUser(user.uid);
+      
+      alert('🗑️ Usuario eliminado correctamente.');
+      
+      this.loadRequests();
+      
+    } catch (error) {
+      console.error(error);
+      alert('Error al eliminar el usuario.');
     }
   }
 }
