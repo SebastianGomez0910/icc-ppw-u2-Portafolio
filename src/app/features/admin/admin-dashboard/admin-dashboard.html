@@ -1,1 +1,45 @@
-<p>admin-dashboard works!</p>
+<div class="p-8 min-h-screen bg-base-200 flex justify-center">
+  
+  <div class="card w-full max-w-2xl bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-2xl mb-6"> Crear Disponibilidad</h2>
+      
+      <div class="form-control w-full mb-4">
+        <label class="label"><span class="label-text font-bold">1. Selecciona el Programador</span></label>
+        
+        <select [(ngModel)]="selectedProgrammerId" class="select select-bordered select-primary">
+          <option value="" disabled selected>-- Elige un programador --</option>
+          @for (prog of programmers; track prog.uid) {
+            <option [value]="prog.uid">{{ prog.displayName || prog.email }}</option>
+          }
+        </select>
+        
+        @if (programmers.length === 0 && !isLoading) {
+          <span class="text-xs text-error mt-1"> No hay programadores registrados en el sistema.</span>
+        }
+      </div>
+
+      <div class="flex gap-4">
+        
+        <div class="form-control w-1/2">
+          <label class="label"><span class="label-text font-bold">2. Fecha</span></label>
+          <input type="date" [(ngModel)]="date" class="input input-bordered" />
+        </div>
+
+        <div class="form-control w-1/2">
+          <label class="label"><span class="label-text font-bold">3. Hora</span></label>
+          <input type="time" [(ngModel)]="time" class="input input-bordered" />
+        </div>
+
+      </div>
+
+      <div class="card-actions justify-end mt-8">
+        <button (click)="createSchedule()" class="btn btn-primary text-white">
+          Crear Horario Disponible 
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

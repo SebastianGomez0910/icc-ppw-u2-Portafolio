@@ -22,10 +22,8 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes), 
     
-    // CORRECCIÓN 1: Usamos la variable 'firebaseConfig' para que se vea limpio
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
 
-    // CORRECCIÓN 2: ¡Faltaban estas dos líneas! Sin esto, no hay Login ni Base de datos.
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()) 
   ]

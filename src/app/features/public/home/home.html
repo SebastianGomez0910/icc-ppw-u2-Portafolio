@@ -1,126 +1,84 @@
 <div class="flex justify-center w-full mt-6 mb-10 px-4">
-  
   <div class="carousel w-full max-w-5xl h-[400px] rounded-2xl shadow-2xl overflow-hidden relative">
     
     <div class="carousel-item relative w-full h-full">
-      
       <img [src]="images[imgDesplazada]" class="w-full h-full object-cover transition-opacity duration-500" />
 
       <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-        
-        <button type="button" (click)="imgPrevia()" class="btn btn-circle btn-sm md:btn-md bg-black/50 border-none text-white hover:bg-black/70">
-          ❮
-        </button> 
-    
-        <button type="button" (click)="siguienteImg()" class="btn btn-circle btn-sm md:btn-md bg-black/50 border-none text-white hover:bg-black/70">
-          ❯
-        </button>
-
+        <button type="button" (click)="imgPrevia()" class="btn btn-circle btn-sm md:btn-md bg-black/50 border-none text-white hover:bg-black/70">❮</button> 
+        <button type="button" (click)="siguienteImg()" class="btn btn-circle btn-sm md:btn-md bg-black/50 border-none text-white hover:bg-black/70">❯</button>
       </div>
     </div>
 
   </div>
 </div>
 
-<div class="w-full max-w-5xl mx-auto px-6 py-10">
+<div class="w-full max-w-7xl mx-auto px-6 py-10">
+  
   <div class="text-center mb-12">
     <h2 class="text-4xl font-bold text-red-800 mb-2">Nuestro Equipo</h2>
-    <p class="text-shadow-gray-800">Conoce a las mentes detrás de cada proyecto</p>
+    <p class="text-gray-500">Conoce a las mentes detrás de cada proyecto</p>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <div class="card bg-base-100 shadow-xl border border-gray-700 hover:border-primary transition-all duration-300">
-      <div class="card-body items-center text-center">
-        
-        <div class="avatar mb-3">
-          <div class="w-32 h-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-            <img src="img/polloPP.jpg" alt="Foto Perfil 1" />
+  @if (isLoading) {
+    <div class="flex justify-center py-10">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+  } @else {
+
+    <div class="flex flex-wrap justify-center gap-8">
+      
+      @for (dev of programmers; track dev.uid) {
+        <div class="card w-full md:w-80 lg:w-96 bg-base-100 shadow-xl border border-gray-700 hover:border-primary transition-all duration-300 hover:-translate-y-2">
+          
+          <div class="card-body items-center text-center">
+            
+            <div class="avatar mb-3">
+              <div class="w-32 h-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                <img [src]="dev.photoURL || 'https://ui-avatars.com/api/?name=' + dev.email + '&background=random'" alt="Foto Perfil" />
+              </div>
+            </div>
+
+            <h2 class="card-title text-2xl text-yellow-600">
+              {{ dev.displayName || 'Programador' }}
+            </h2>
+            
+            <p class="text-secondary font-medium text-sm tracking-wide uppercase">
+              {{ dev.specialty || 'Full Stack Developer' }}
+            </p>
+
+            <p class="text-gray-400 mt-2 mb-4 line-clamp-3 min-h-[48px]">
+              {{ dev.description || 'Profesional apasionado por el código limpio y soluciones escalables, listo para ayudarte en tu próximo proyecto.' }}
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-2 mb-6">
+              @if (dev.githubUrl) {
+                <a [href]="dev.githubUrl" target="_blank" class="btn btn-ghost btn-circle btn-sm" title="GitHub">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                </a>
+              }
+              @if (dev.linkedinUrl) {
+                <a [href]="dev.linkedinUrl" target="_blank" class="btn btn-ghost btn-circle btn-sm text-blue-500" title="LinkedIn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                </a>
+              }
+            </div>
+
+            <div class="card-actions w-full mt-auto">
+              <a routerLink="/proyectos" class="btn btn-primary btn-block text-white shadow-md">
+                Ver Proyectos 
+              </a>
+            </div>
           </div>
         </div>
+      }
 
-        <h2 class="card-title text-2xl text-yellow-600">Sebastián Gómez</h2>
-        <p class="text-yellow-600 font-medium text-sm tracking-wide">FULL STACK DEVELOPER</p>
-
-        <p class="text-gray-400 mt-2 mb-4">
-          Especialista en arquitectura frontend con Angular y soluciones escalables. Apasionado por el código limpio y la experiencia de usuario.
-        </p>
-
-        <div class="flex flex-wrap justify-center gap-2 mb-6">
-          <div class="badge badge-outline">Angular</div>
-          <div class="badge badge-outline">TypeScript</div>
-          <div class="badge badge-outline">UI/UX</div>
+      @if (programmers.length === 0) {
+        <div class="col-span-full text-center text-gray-500 py-10 w-full">
+          <p>No hay programadores públicos registrados aún.</p>
         </div>
-
-        <div class="card-actions">
-          <button routerLink="/proyectos-sebastian" class="btn btn-primary btn-wide text-white">
-            Ver Proyectos
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="card bg-base-100 shadow-xl border border-gray-700 hover:border-secondary transition-all duration-300">
-      <div class="card-body items-center text-center">
-        
-        <div class="avatar mb-3">
-          <div class="w-32 h-32 rounded-full ring ring-secondary ring-offset-base-100 ring-offset-2">
-            <img src="img/chilly-willy.jpg" alt="Foto Perfil 2" />
-          </div>
-        </div>
-
-        <h2 class="card-title text-2xl text-purple-800">Jean Pierre</h2>
-        <p class="text-secondary font-medium text-sm tracking-wide">BACKEND SPECIALIST</p>
-
-        <p class="text-gray-400 mt-2 mb-4">
-          Especialista en arquitectura frontend con Angular y soluciones escalables. Apasionado por el código limpio y la experiencia de usuario.
-        </p>
-
-        <div class="flex flex-wrap justify-center gap-2 mb-6">
-          <div class="badge badge-outline">Angular</div>
-          <div class="badge badge-outline">TypeScript</div>
-          <div class="badge badge-outline">UI/UX</div>
-        </div>
-
-        <div class="card-actions">
-          <button routerLink="/proyectos-jean" class="btn btn-secondary btn-wide text-white">
-            Ver Proyectos
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="hero bg-base-200 py-12 mt-10 rounded-t-3xl mx-auto max-w-6xl">
-  <div class="hero-content text-center">
-    <div class="max-w-md">
-      
-      <h2 class="text-3xl font-bold text-red-800">¿Listo para empezar tu proyecto?</h2>
-      
-      <p class="py-6 text-white">
-        Únete a nuestra plataforma y conecta con los mejores desarrolladores o agenda tu primera asesoría hoy mismo.
-      </p>
-      
-      <button routerLink="/registro" class="btn bg-red-800 btn-lg text-white shadow-xl hover:scale-105 transition-transform">
-        Registrarse Gratis
-      </button>
-
-      <div class="mt-4">
-        <span class="text-sm text-white">¿Ya tienes cuenta? </span>
-        <a routerLink="/login" class="link text-red-600 no-underline hover:underline font-bold">Inicia sesión</a>
-      </div>
+      }
 
     </div>
-  </div>
+  }
 </div>
-</div>
-
-<button 
-  *ngIf="mostrarBotonArriba"
-  (click)="volverArriba()"
-  class="btn btn-circle btn-primary fixed bottom-8 right-8 shadow-lg z-50 animate-bounce text-white">
-
-  <svg xmls="http://www.w3.org/2000/svg" class="h-6 w-6"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
-  </svg>
- </button>
-

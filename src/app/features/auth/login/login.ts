@@ -3,7 +3,6 @@ import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/firebase/auth';
 import { UserService } from '../../../core/services/roles/user-service';
-// 1. IMPORTA TU SERVICIO DE USUARIOS
 
 @Component({
   selector: 'app-login',
@@ -15,7 +14,7 @@ import { UserService } from '../../../core/services/roles/user-service';
 export class Login {
 
   private authService = inject(AuthService);
-  private userService = inject(UserService); // <--- 2. INYECTAR SERVICIO
+  private userService = inject(UserService); 
   private router = inject(Router);
 
   loginData = {
@@ -25,23 +24,25 @@ export class Login {
 
   errorMessage = '';
 
-  // --- NUEVA FUNCIÓN INTELIGENTE PARA REDIRIGIR ---
   async redirigirSegunRol(uid: string) {
     try {
-      // Consultamos qué rol tiene este usuario
       const profile = await this.userService.getUserById(uid);
       
       if (profile?.role === 'admin') {
-        console.log('👑 Admin detectado. Yendo al panel...');
+        console.log('Admin detectado. Yendo al panel.');
         this.router.navigate(['/admin']); 
-      } else {
-        // Si es programador o usuario normal, va al Home
+      } 
+      else if (profile?.role == 'programmer'){
+        console.log('Programador detectado. Yendo al panel.')
+        this.router.navigate(['/programmer/projects'])
+      }
+      else {
         console.log('👤 Usuario detectado. Yendo al inicio...');
         this.router.navigate(['/home']);
       }
     } catch (error) {
       console.error('Error al redirigir:', error);
-      this.router.navigate(['/home']); // Por seguridad, si falla, al Home
+      this.router.navigate(['/home']); 
     }
   }
 
@@ -49,7 +50,6 @@ export class Login {
     this.authService.login(this.loginData.email, this.loginData.password)
       .subscribe({
         next: async (res) => {
-          // 'res.user.uid' es el ID del usuario que acaba de entrar
           await this.redirigirSegunRol(res.user.uid);
         },
         error: (err) => {
@@ -63,7 +63,6 @@ export class Login {
     this.authService.loginWithGoogle()
       .subscribe({
         next: async (res) => {
-          // Igual aquí: Usamos el UID para decidir el destino
           await this.redirigirSegunRol(res.user.uid);
         },
         error: (err) => {

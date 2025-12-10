@@ -17,23 +17,18 @@
 
       @if (isAdmin) {
         
-        <li>
-          <a routerLink="/admin" class="font-bold flex gap-2 items-center text-primary">
-            👥 Gestionar Roles
-          </a>
-        </li>
-        <li><a routerLink="/home" class="text-gray-400 text-xs">Ver Web Pública</a></li>
+        <li><a routerLink="/admin" class="font-bold flex gap-2 items-center text-primary">Gestionar Roles</a></li>
+        <li><a routerLink="/admin/schedule" class="ont-bold flex gap-2 items-center text-primary">Gestionar Horarios</a></li>
 
       } @else if (isProgramer) {
 
         <li><a routerLink="/programmer/projects">Mis Proyectos</a></li>
         <li><a routerLink="/programmer/appointments">Mis Citas</a></li>
-        <li><a routerLink="/home" (click)="irInicio()">Inicio</a></li>
 
       } @else {
 
         <li><a routerLink="/home" (click)="irInicio()">Inicio</a></li>
-        <li><a routerLink="/programadores">Proyectos</a></li>
+        <li><a routerLink="/proyectos">Proyectos</a></li>
         <li><a routerLink="/asesorias">Asesorías</a></li>
 
       }

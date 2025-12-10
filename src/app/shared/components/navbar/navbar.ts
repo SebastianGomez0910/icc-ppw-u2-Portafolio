@@ -42,7 +42,6 @@ export class Navbar {
   }
 
   constructor() {
-    // Este efecto se ejecuta cada vez que cambia el estado del usuario (Login/Logout)
     effect(() => {
       const user = this.AuthService.currentUser();
       if (user) {
@@ -52,7 +51,7 @@ export class Navbar {
         console.log('Navbar: No hay usuario, reseteando menú.');
         this.isAdmin = false;
         this.isProgramer = false;
-        this.cd.detectChanges(); // Actualizamos vista
+        this.cd.detectChanges(); 
       }
     });
   }
@@ -62,12 +61,11 @@ export class Navbar {
       console.log('--- BUSCANDO EN BASE DE DATOS EL ID:', uid);
       const profile = await this.UserService.getUserById(uid);
       
-      console.log('Navbar: Perfil descargado de Firebase:', profile); // <--- MIRA ESTO EN CONSOLA
+      console.log('Navbar: Perfil descargado de Firebase:', profile); 
 
       if (profile) {
-        // Verificamos el rol y actualizamos las variables
         this.isAdmin = profile.role === 'admin';
-        this.isProgramer = profile.role === 'programmer'; // Asegúrate que en Firebase diga 'programmer' y no 'programador'
+        this.isProgramer = profile.role === 'programmer'; 
 
         console.log('¿Es Admin?', this.isAdmin);
         console.log('¿Es Programador?', this.isProgramer);
@@ -75,7 +73,6 @@ export class Navbar {
     } catch (error) {
       console.error('Navbar: Error al obtener el rol', error);
     } finally {
-      // 3. ¡DESPIERTA ANGULAR! Obligamos a repintar el Navbar con los nuevos botones
       this.cd.detectChanges();
     }
   }

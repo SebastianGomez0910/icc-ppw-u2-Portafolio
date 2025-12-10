@@ -1,1 +1,81 @@
-<p>appointments works!</p>
+<div class="p-8 min-h-screen bg-base-200">
+  <h1 class="text-3xl font-bold mb-6 text-primary"> Gestión de Asesorías</h1>
+
+  @if (isLoading) {
+    <span class="loading loading-spinner loading-lg"></span>
+  } @else if (appointments.length === 0) {
+    <div class="alert shadow-lg">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+      <div>
+        <h3 class="font-bold">Sin novedades</h3>
+        <div class="text-xs">No tienes citas agendadas por el momento.</div>
+      </div>
+    </div>
+  } @else {
+    
+    <div class="grid gap-4 max-w-4xl">
+      @for (cita of appointments; track cita.id) {
+        
+        <div class="card bg-base-100 shadow-xl border-l-8"
+             [ngClass]="{
+               'border-warning': !cita.status || cita.status === 'pending',
+               'border-success': cita.status === 'confirmed',
+               'border-error': cita.status === 'rejected'
+             }">
+          
+          <div class="card-body">
+            
+            <div class="flex justify-between items-start">
+              <div>
+                <h2 class="card-title text-2xl font-black">
+                  {{ cita.date }} <span class="text-base font-normal text-gray-500">| {{ cita.time }}</span>
+                </h2>
+                <p class="font-bold mt-1 text-primary">{{ cita.clientName }}</p>
+              </div>
+
+              @if (!cita.status || cita.status === 'pending') {
+                <div class="badge badge-warning gap-2 p-3 font-bold">
+                   Pendiente
+                </div>
+              } @else if (cita.status === 'confirmed') {
+                <div class="badge badge-success text-white gap-2 p-3 font-bold">
+                  ✅ Confirmada
+                </div>
+              } @else if (cita.status === 'rejected') {
+                <div class="badge badge-error text-white gap-2 p-3 font-bold">
+                  ❌ Rechazada
+                </div>
+              }
+            </div>
+
+            <div class="my-4 p-3 bg-base-200 rounded-lg">
+              <p class="text-sm font-bold text-gray-500 uppercase text-xs">Motivo de la consulta:</p>
+              <p class="italic text-gray-700">"{{ cita.topic }}"</p>
+            </div>
+
+            @if (cita.status === 'rejected') {
+              <div class="alert alert-error shadow-sm text-white p-2 text-sm">
+                <span class="font-bold">Motivo del rechazo:</span> {{ cita.rejectionReason }}
+              </div>
+            }
+
+            @if (!cita.status || cita.status === 'pending') {
+              <div class="card-actions justify-end mt-2">
+                <button (click)="rechazarCita(cita)" class="btn btn-outline btn-error btn-sm">
+                  Rechazar ✕
+                </button>
+                <button (click)="aceptarCita(cita)" class="btn btn-success text-white btn-sm">
+                  Aceptar ✅
+                </button>
+              </div>
+            }
+            
+            
+
+          </div>
+        </div>
+      }
+    </div>
+
+  }
+</div>

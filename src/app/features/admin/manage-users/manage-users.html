@@ -40,9 +40,9 @@
 
               <td class="text-center">
                 @if (user.role === 'admin') {
-                  <span class="badge badge-error text-white font-bold">ADMIN 👑</span>
+                  <span class="badge badge-error text-white font-bold">ADMIN </span>
                 } @else if (user.role === 'programmer') {
-                  <span class="badge badge-primary text-white">DEV 💻</span>
+                  <span class="badge badge-primary text-white">DEV </span>
                 } @else {
                   <span class="badge badge-ghost">Usuario</span>
                 }
@@ -55,7 +55,7 @@
                   class="btn btn-xs btn-ghost border-gray-300"
                   [disabled]="user.role === 'user'"
                   title="Degradar a Usuario">
-                  👤
+                  Usuario
                 </button>
 
                 <button 
@@ -63,7 +63,7 @@
                   class="btn btn-xs btn-primary text-white"
                   [disabled]="user.role === 'programmer'"
                   title="Ascender a Programador">
-                  💻 Dev
+                   Dev
                 </button>
 
                 <button 
@@ -71,7 +71,7 @@
                   class="btn btn-xs btn-error text-white"
                   [disabled]="user.role === 'admin'"
                   title="Hacer Admin">
-                  👑 Admin
+                   Admin
                 </button>
 
                 <button 

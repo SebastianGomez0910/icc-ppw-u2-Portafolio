@@ -27,23 +27,19 @@ export class ManageUsers implements OnInit {
     this.isLoading = true;
 
     try {
-      // 1. Llamamos al servicio
       console.log('Consultando a Firebase...');
       this.allUsers = await this.userService.getAllUsers();
       
-      // 2. Vemos qué llegó
       console.log('Respuesta recibida. Usuarios encontrados:', this.allUsers.length);
       console.log('Datos:', this.allUsers);
 
     } catch (error) {
-      // 3. Si falla, nos dirá por qué
       console.error('ERROR GRAVE cargando usuarios:', error);
       alert('Error al leer datos. Revisa la consola.');
     } finally {
-      // 4. Terminamos
       this.isLoading = false;
       console.log('--- FIN DEL PROCESO (isLoading = false) ---');
-      this.cd.detectChanges(); //
+      this.cd.detectChanges(); 
     }
   }
 
@@ -79,9 +75,8 @@ export class ManageUsers implements OnInit {
   }
 
   async cambiarRol(user: UserProfile, nuevoRol: 'admin' | 'programmer' | 'user') {
-    // Protección para no quitarte el admin a ti mismo por error
     if (user.role === 'admin' && nuevoRol !== 'admin') {
-      if (!confirm('⚠️ CUIDADO: Estás a punto de quitarle el rol de Admin a este usuario. ¿Seguro?')) {
+      if (!confirm(' CUIDADO: Estás a punto de quitarle el rol de Admin a este usuario. ¿Seguro?')) {
         return;
       }
     }
@@ -89,7 +84,7 @@ export class ManageUsers implements OnInit {
     try {
       await this.userService.updateRole(user.uid, nuevoRol);
       alert(`Rol actualizado a: ${nuevoRol.toUpperCase()}`);
-      this.loadRequests(); // Recargamos la lista para ver el cambio
+      this.loadRequests(); 
     } catch (error) {
       console.error(error);
       alert('Error al actualizar rol');
@@ -97,14 +92,14 @@ export class ManageUsers implements OnInit {
   }
 
   async eliminarUsuario(user: UserProfile) {
-    const confirmacion = confirm(`⚠️ ¿Estás seguro de ELIMINAR a ${user.email}?\n\nEsta acción no se puede deshacer.`);
+    const confirmacion = confirm(` ¿Estás seguro de ELIMINAR a ${user.email}?\n\nEsta acción no se puede deshacer.`);
     
     if (!confirmacion) return;
 
     try {
       await this.userService.deleteUser(user.uid);
       
-      alert('🗑️ Usuario eliminado correctamente.');
+      alert(' Usuario eliminado correctamente.');
       
       this.loadRequests();
       

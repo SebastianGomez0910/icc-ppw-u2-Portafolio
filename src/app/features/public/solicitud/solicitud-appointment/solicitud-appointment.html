@@ -1,0 +1,146 @@
+<div class="p-8 min-h-screen bg-base-200">
+  <div class="max-w-6xl mx-auto">
+    
+    <h1 class="text-4xl font-bold text-center mb-10 text-primary"> Agenda tu Asesoría</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      
+      <div class="card bg-base-100 shadow-xl h-fit sticky top-20">
+        <div class="card-body">
+          <h2 class="card-title mb-4 flex gap-2">
+             Buscar
+          </h2>
+          
+          <div class="form-control w-full">
+            <label class="label"><span class="label-text font-bold">Programador</span></label>
+            <select 
+              [(ngModel)]="selectedProgrammerId" 
+              (change)="onProgrammerChange()" 
+              class="select select-bordered select-primary w-full">
+              <option value="" disabled selected>-- Selecciona --</option>
+              @for (prog of programmers; track prog.uid) {
+                <option [value]="prog.uid">{{ prog.displayName || prog.email }}</option>
+              }
+            </select>
+          </div>
+
+          @if (selectedProgrammerId) {
+            <div class="divider text-xs">Filtrar Horarios</div>
+
+            <div class="flex gap-2">
+              <div class="form-control w-full">
+                <label class="label"><span class="label-text text-xs">Fecha</span></label>
+                <input 
+                  type="date" 
+                  [(ngModel)]="filterDate" 
+                  (ngModelChange)="applyFilters()"
+                  class="input input-bordered input-sm w-full" />
+              </div>
+
+              <div class="form-control w-full">
+                <label class="label"><span class="label-text text-xs">Hora</span></label>
+                <input 
+                  type="time" 
+                  [(ngModel)]="filterTime" 
+                  (ngModelChange)="applyFilters()"
+                  class="input input-bordered input-sm w-full" />
+              </div>
+            </div>
+            
+            @if (filterDate || filterTime) {
+              <button 
+                class="btn btn-ghost btn-xs mt-2 text-error"
+                (click)="filterDate=''; filterTime=''; applyFilters()">
+                Limpiar filtros ✕
+              </button>
+            }
+          }
+
+          <div class="divider"></div>
+
+          <h2 class="card-title mb-2"> Motivo</h2>
+          <div class="form-control w-full">
+            <textarea 
+              [(ngModel)]="bookingTopic" 
+              class="textarea textarea-bordered h-24" 
+              placeholder="Ej: Revisión de código..."></textarea>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="md:col-span-2">
+        
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold flex items-center gap-2">
+             Horarios Disponibles
+            @if (isLoadingSlots) { <span class="loading loading-spinner loading-sm"></span> }
+          </h2>
+          
+          @if (selectedProgrammerId && !isLoadingSlots) {
+            <div class="badge badge-outline">
+              {{ filteredSlots.length }} encontrados
+            </div>
+          }
+        </div>
+
+        @if (!selectedProgrammerId) {
+          <div class="alert shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div>
+              <h3 class="font-bold">Empieza seleccionando un Experto</h3>
+              <div class="text-xs">Usa el panel izquierdo para comenzar la búsqueda.</div>
+            </div>
+          </div>
+        } 
+        
+        @else if (filteredSlots.length === 0 && !isLoadingSlots) {
+          <div class="alert alert-warning shadow-lg">
+            <div>
+              <h3 class="font-bold">No se encontraron horarios </h3>
+              <div class="text-xs">
+                @if (filterDate || filterTime) {
+                  Intenta cambiar la fecha/hora o limpiar los filtros.
+                } @else {
+                  Este programador no tiene cupos disponibles.
+                }
+              </div>
+            </div>
+          </div>
+        } 
+        
+        @else {
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            @for (slot of filteredSlots; track slot.id) {
+              <div class="card bg-base-100 shadow-md hover:shadow-xl transition-all border border-base-200">
+                <div class="card-body p-5 items-center text-center">
+                  
+                  <div class="badge badge-secondary badge-outline mb-2">{{ slot.date }}</div>
+                  
+                  <h3 class="text-3xl font-black text-base-content">{{ slot.time }}</h3>
+                  
+                  <div class="mt-4 w-full">
+                     @if (authService.currentUser()) {
+                        <button 
+                          (click)="book(slot)" 
+                          [disabled]="!bookingTopic"
+                          class="btn btn-primary btn-sm w-full text-white">
+                          Reservar
+                        </button>
+                     } @else {
+                        <a routerLink="/login" class="btn btn-outline btn-primary btn-sm w-full">
+                           Ingresar
+                        </a>
+                     }
+                  </div>
+
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+      </div>
+    </div>
+  </div>
+</div>

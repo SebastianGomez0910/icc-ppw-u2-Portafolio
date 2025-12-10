@@ -8,7 +8,12 @@ export interface UserProfile {
   displayName?: string; 
   photoURL?: string;
   role: 'admin' | 'programmer' | 'user'; 
-  requestingProgrammerRole?: boolean;    
+  requestingProgrammerRole?: boolean;  
+  
+  specialty?: string;      
+  description?: string;    
+  githubUrl?: string;      
+  linkedinUrl?: string;
 }
 
 @Injectable({
