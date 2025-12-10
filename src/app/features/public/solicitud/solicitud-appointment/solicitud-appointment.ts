@@ -2,8 +2,8 @@ import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserProfile, UserService } from '../../../../core/services/roles/user-service';
-import { AppointmentService, AppointmentSlot } from '../../../../core/services/appointment';
-import { AuthService } from '../../../../core/services/firebase/auth';
+import { AppointmentService, AppointmentSlot } from '../../../../core/services/appointment'; // O appointment.service
+import { AuthService } from '../../../../core/services/firebase/auth'; 
 
 @Component({
   selector: 'app-request-appointment',
@@ -25,7 +25,7 @@ export class RequestAppointmentComponent implements OnInit {
   
   selectedProgrammerId: string = '';
   bookingTopic: string = '';
-    filterDate: string = '';
+  filterDate: string = '';
   filterTime: string = '';
 
   isLoading = true;
@@ -51,9 +51,7 @@ export class RequestAppointmentComponent implements OnInit {
 
     try {
       this.allSlots = await this.appointmentService.getAvailableSlots(this.selectedProgrammerId);
-      
       this.applyFilters();
-
     } catch (error) {
       console.error(error);
     } finally {
@@ -80,17 +78,33 @@ export class RequestAppointmentComponent implements OnInit {
   async book(slot: AppointmentSlot) {
     const currentUser = this.authService.currentUser();
 
+    if (!this.bookingTopic || this.bookingTopic.trim() === '') {
+        alert('Por favor escribe el motivo de la asesoría antes de reservar.');
+        return;
+    }
+
     if (confirm(`¿Reservar cita para el ${slot.date} a las ${slot.time}?`)) {
       try {
          const clientName = currentUser?.displayName || currentUser?.email || 'Cliente';
-         await this.appointmentService.bookSlot(slot.id!, clientName, this.bookingTopic);
+         const clientEmail = currentUser?.email || '';
+         const clientId = currentUser?.uid || '';
+
+         await this.appointmentService.bookSlot(
+            slot.id!, 
+            clientName, 
+            clientEmail, 
+            clientId, 
+            this.bookingTopic
+         );
          
-         alert('✅ ¡Cita agendada!');
+         alert('✅ ¡Cita agendada! El programador ha sido notificado.');
          this.bookingTopic = '';
+         
          await this.onProgrammerChange(); 
          
       } catch (error) {
         console.error(error);
+        alert('Ocurrió un error al reservar. Intenta nuevamente.');
       }
     }
   }

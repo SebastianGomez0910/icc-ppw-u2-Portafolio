@@ -32,45 +32,97 @@ export class ProgrammerAppointmentsComponent implements OnInit {
     }
   }
 
-  async aceptarCita(slot: AppointmentSlot) {
-    let mensaje = prompt('Escribe un mensaje de confirmación para el cliente (Opcional):');
+  enviarWhatsApp(cita: AppointmentSlot, tipo: 'confirmar' | 'rechazar', mensajeExtra: string) {
+    let texto = '';
     
-    if (mensaje === null) return;
-
-    if (mensaje.trim() === '') {
-      mensaje = '¡Asesoría confirmada! Nos vemos en la fecha acordada.';
+    if (tipo === 'confirmar') {
+      texto = `Hola ${cita.clientName}, tu asesoría para el ${cita.date} a las ${cita.time} ha sido CONFIRMADA. ${mensajeExtra}`;
+    } else {
+      texto = `Hola ${cita.clientName}, lamentamos informar que tu asesoría para el ${cita.date} ha sido RECHAZADA. Motivo: ${mensajeExtra}`;
     }
 
+    const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+    window.open(url, '_blank');
+  }
+
+  enviarCorreo(cita: AppointmentSlot, tipo: 'confirmar' | 'rechazar', mensajeExtra: string) {
+    console.log('📧 Intentando enviar correo a:', cita.clientEmail); // <--- CHIVATO EN CONSOLA
+
+    const asunto = tipo === 'confirmar' ? '✅ Cita Confirmada' : '❌ Actualización de tu Cita';
+    let cuerpo = '';
+
+    if (tipo === 'confirmar') {
+      cuerpo = `Hola ${cita.clientName},\n\nTu cita ha sido confirmada para el ${cita.date} a las ${cita.time}.\n\nMensaje del programador:\n${mensajeExtra}`;
+    } else {
+      cuerpo = `Hola ${cita.clientName},\n\nTu cita ha sido rechazada.\n\nMotivo:\n${mensajeExtra}`;
+    }
+
+    const emailDestino = cita.clientEmail;
+    if (!emailDestino) {
+        alert('⚠️ Error: Esta cita no tiene un correo guardado. No se puede abrir Gmail.');
+        return;
+    }
+    
+    const url = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${emailDestino}&su=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+    
+    console.log('🔗 Link generado:', url);
+
+    const ventana = window.open(url, '_blank');
+
+    if (!ventana || ventana.closed || typeof ventana.closed == 'undefined') { 
+        alert('🚫 El navegador bloqueó la ventana de Gmail. Por favor revisa el icono de "Ventana emergente bloqueada" en la barra de direcciones (arriba a la derecha) y dale permiso.');
+    }
+  }
+  async aceptarCita(slot: AppointmentSlot) {
+    let mensajeInput = prompt('Mensaje de confirmación (Opcional):');
+    if (mensajeInput === null) return;
+
+    const mensajeFinal = mensajeInput.trim() || '¡Nos vemos pronto!';
+
     try {
+      await this.appointmentService.confirmAppointment(slot.id!, mensajeFinal);
+      
+      if(confirm('✅ Cita confirmada. ¿Quieres enviar la notificación por WhatsApp ahora?')) {
+          this.enviarWhatsApp(slot, 'confirmar', mensajeFinal);
+      } 
+      
  
-      await this.appointmentService.confirmAppointment(slot.id!, mensaje);
+      if (confirm('¿Quieres enviar también un Correo de respaldo?')) {
+          this.enviarCorreo(slot, 'confirmar', mensajeFinal);
+      }
       
-      alert(' Cita confirmada y mensaje enviado.');
-      this.loadAppointments(); 
-      
+      this.loadAppointments();
+
     } catch (error) {
       console.error(error);
-      alert('Error al confirmar');
+      alert('Error al confirmar la cita.');
     }
   }
 
   async rechazarCita(slot: AppointmentSlot) {
-    const motivo = prompt('Por favor escribe el motivo del rechazo:');
-    
-    if (motivo === null) return; 
-    
+    const motivo = prompt('Motivo del rechazo:');
+    if (motivo === null) return;
     if (motivo.trim() === '') {
-      alert('Debes escribir un motivo para rechazar.');
-      return;
+        alert('Debes escribir un motivo.');
+        return;
     }
-
+    
     try {
       await this.appointmentService.rejectAppointment(slot.id!, motivo);
-      alert(' Cita rechazada.');
+
+      if(confirm('❌ Cita rechazada. ¿Notificar por WhatsApp?')) {
+          this.enviarWhatsApp(slot, 'rechazar', motivo);
+      } 
+      
+      if (confirm('¿Enviar notificación por Correo también?')) {
+          this.enviarCorreo(slot, 'rechazar', motivo);
+      }
+      
       this.loadAppointments();
+
     } catch (error) {
       console.error(error);
-      alert('Error al rechazar');
+      alert('Error al rechazar la cita.');
     }
   }
 }

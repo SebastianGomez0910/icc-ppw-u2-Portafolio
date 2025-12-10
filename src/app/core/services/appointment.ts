@@ -13,6 +13,8 @@ export interface AppointmentSlot {
   status?: 'pending' | 'confirmed' | 'rejected'; 
   rejectionReason?: string;                      
   confirmationMessage?: string;
+  clientId?: string;    
+  clientEmail?: string;
 }
 
 @Injectable({
@@ -49,11 +51,13 @@ export class AppointmentService {
     return snap.docs.map(doc => ({id: doc.id, ...doc.data() as any}));
   }
 
-  bookSlot(slotId: string, clientName: string, topic: string) {
+  bookSlot(slotId: string, clientName: string, clientEmail: string, clientId: string, topic: string) {
     const docRef = doc(this.firestore, `appointments/${slotId}`);
     return updateDoc(docRef, {
       isBooked: true,
       clientName: clientName,
+      clientEmail: clientEmail, 
+      clientId: clientId,
       topic: topic,
       status: 'pending' 
     });
@@ -84,5 +88,12 @@ export class AppointmentService {
       status: 'rejected',
       rejectionReason: reason
     });
+  }
+
+  async getClientAppointments(clientId: string) {
+    const slotsRef = collection(this.firestore, 'appointments');
+    const q = query(slotsRef, where('clientId', '==', clientId));
+    const snap = await getDocs(q);
+    return snap.docs.map(doc => ({id: doc.id, ...doc.data() as any}));
   }
 }

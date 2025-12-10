@@ -1,7 +1,6 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// Verifica que la ruta de importación sea la correcta en tu proyecto
 import { Project, ProjectService } from '../../../core/services/project'; 
 import { AuthService } from '../../../core/services/firebase/auth';
 
@@ -37,7 +36,6 @@ export class ProgrammerProjectsComponent implements OnInit {
   ngOnInit() {
     if (this.currentUser) {
       this.newProject.programmerId = this.currentUser.uid;
-      // Pre-llenamos el nombre para ayudar, pero el usuario puede editarlo
       this.newProject.authorName = this.currentUser.displayName || this.currentUser.email || '';
       this.loadProjects();
     }
@@ -51,23 +49,17 @@ export class ProgrammerProjectsComponent implements OnInit {
   }
 
   async add() {
-    // 1. VALIDACIÓN: Agregamos 'authorName' para que no lo dejen vacío
     if (!this.newProject.authorName || !this.newProject.name || !this.newProject.description || !this.newProject.role || !this.newProject.technologies) {
       alert('Por favor, completa los campos obligatorios marcados con *');
       return;
     }
 
-    // 🔴 AQUÍ BORRÉ LAS LÍNEAS QUE SOBRESCRIBÍAN EL NOMBRE
-    // Ahora confiamos en this.newProject.authorName que viene del HTML
-
     try {
       await this.projectService.addProject(this.newProject);
       alert('🚀 Proyecto añadido exitosamente');
       
-      // 2. LIMPIEZA: Reiniciamos el formulario
       this.newProject = {
         programmerId: this.currentUser?.uid || '',
-        // Volvemos a pre-llenar el nombre para el siguiente proyecto por comodidad
         authorName: this.currentUser?.displayName || this.currentUser?.email || '',
         name: '',
         description: '',
