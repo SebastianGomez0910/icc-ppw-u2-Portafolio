@@ -79,8 +79,7 @@ export class ProgrammerProjectsComponent implements OnInit {
     if (!this.newProject.name.trim())
       return 'El nombre del proyecto es obligatorio.';
 
-    if (!ValidationService.minLengthValue(this.newProject.name, 3))
-      return 'El nombre del proyecto debe tener al menos 3 caracteres.';
+    
 
     if (!this.newProject.description.trim())
       return 'La descripción es obligatoria.';
@@ -88,8 +87,6 @@ export class ProgrammerProjectsComponent implements OnInit {
     if (!this.newProject.role.trim())
       return 'El rol es obligatorio.';
 
-    if (!ValidationService.onlyLettersValue(this.newProject.role))
-      return 'El rol debe contener solo letras.';
 
     if (!this.newProject.technologies.trim())
       return 'Las tecnologías utilizadas son obligatorias.';
