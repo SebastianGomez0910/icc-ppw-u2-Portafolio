@@ -1,71 +1,75 @@
 <div class="navbar bg-base-100 shadow-md fixed top-0 w-full z-50">
   
-  <div class="flex-1">
+  <div class="navbar-start">
+    
+    <div class="dropdown">
+      <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
+      </div>
+      <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+        @if (isAdmin) {
+          <li><a routerLink="/admin" class="text-primary font-bold">Gestionar Roles</a></li>
+          <li><a routerLink="/admin/schedule" class="text-primary font-bold">Gestionar Horarios</a></li>
+        } @else if (isProgramer) {
+          <li><a routerLink="/programmer/projects">Mis Proyectos</a></li>
+          <li><a routerLink="/programmer/appointments">Mis Citas</a></li>
+        } @else {
+          <li><a routerLink="/home" (click)="irInicio()">Inicio</a></li>
+          <li><a routerLink="/proyectos">Proyectos</a></li>
+          <li><a routerLink="/asesorias">Asesorías</a></li>
+        }
+      </ul>
+    </div>
+
     @if (isAdmin) {
-      <a routerLink="/admin" class="btn btn-ghost text-xl text-red-500 font-bold">Panel Admin</a>
+      <a routerLink="/admin" class="btn btn-ghost text-lg md:text-xl text-red-500 font-bold">Panel Admin</a>
     } 
     @else if (isProgramer) {
-      <a routerLink="/programmer" class="btn btn-ghost text-xl text-yellow-500 font-bold">Panel Programador</a>
+      <a routerLink="/programmer" class="btn btn-ghost text-lg md:text-xl text-yellow-500 font-bold">Panel Dev</a>
     }
     @else {
-      <a routerLink="/home" (click)="irInicio()" class="btn btn-ghost text-xl">Portafolio</a>
+      <a routerLink="/home" (click)="irInicio()" class="btn btn-ghost text-lg md:text-xl">Portafolio</a>
     }
   </div>
 
-  <div class="flex-none">
-    <ul class="menu menu-horizontal px-1 items-center">
-
+  <div class="navbar-center hidden lg:flex">
+    <ul class="menu menu-horizontal px-1">
       @if (isAdmin) {
-        
-        <li><a routerLink="/admin" class="font-bold flex gap-2 items-center text-primary">Gestionar Roles</a></li>
-        <li><a routerLink="/admin/schedule" class="ont-bold flex gap-2 items-center text-primary">Gestionar Horarios</a></li>
-
+        <li><a routerLink="/admin" class="font-bold text-primary">Gestionar Roles</a></li>
+        <li><a routerLink="/admin/schedule" class="font-bold text-primary">Gestionar Horarios</a></li>
       } @else if (isProgramer) {
-
         <li><a routerLink="/programmer/projects">Mis Proyectos</a></li>
         <li><a routerLink="/programmer/appointments">Mis Citas</a></li>
-
       } @else {
-
         <li><a routerLink="/home" (click)="irInicio()">Inicio</a></li>
         <li><a routerLink="/proyectos">Proyectos</a></li>
         <li><a routerLink="/asesorias">Asesorías</a></li>
-
-      }
-
-      @if (AuthService.currentUser()) {
-        
-        <li class="ml-2">
-          <div class="dropdown dropdown-end">
-            
-            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-              <div class="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                <img [src]="AuthService.currentUser()?.photoURL || 'https://www.todofondos.net/wp-content/uploads/mas-de-74-fondos-de-pantalla-de-solid-green.-fondo-para-computadora-hd-1080p-verde-liso.jpg'" alt="Avatar"/>
-              </div>
-            </div>
-
-            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-              <li class="menu-title px-4 py-2 text-xs text-gray-500">
-                {{ AuthService.currentUser()?.email }}
-              </li>
-              
-              <div class="divider my-0"></div>
-              
-              <li><button (click)="logout()" class="text-red-500 font-bold">Cerrar Sesión</button></li>
-            </ul>
-
-          </div>
-        </li>
-
-      } @else {
-
-        <li>
-          <a routerLink="/login" class="btn btn-primary btn-sm text-white ml-2 shadow-lg border-none">
-            Ingresar
-          </a>
-        </li>
-
       }
     </ul>
   </div>
+
+  <div class="navbar-end">
+    
+    @if (AuthService.currentUser()) {
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+          <div class="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+             <img [src]="AuthService.currentUser()?.photoURL || 'https://ui-avatars.com/api/?name=' + AuthService.currentUser()?.email" alt="Avatar"/>
+          </div>
+        </div>
+        <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+          <li class="menu-title px-4 py-2 text-xs text-gray-500">
+             {{ AuthService.currentUser()?.email }}
+          </li>
+          <div class="divider my-0"></div>
+          <li><button (click)="logout()" class="text-red-500 font-bold">Cerrar Sesión</button></li>
+        </ul>
+      </div>
+    } @else {
+      <a routerLink="/login" class="btn btn-primary btn-sm text-white shadow-lg border-none">
+        Ingresar
+      </a>
+    }
+  </div>
+
 </div>

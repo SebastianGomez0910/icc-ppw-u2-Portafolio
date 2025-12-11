@@ -32,47 +32,20 @@ export class ProgrammerAppointmentsComponent implements OnInit {
     }
   }
 
-  enviarWhatsApp(cita: AppointmentSlot, tipo: 'confirmar' | 'rechazar', mensajeExtra: string) {
-    let texto = '';
-    
-    if (tipo === 'confirmar') {
-      texto = `Hola ${cita.clientName}, tu asesoría para el ${cita.date} a las ${cita.time} ha sido CONFIRMADA. ${mensajeExtra}`;
-    } else {
-      texto = `Hola ${cita.clientName}, lamentamos informar que tu asesoría para el ${cita.date} ha sido RECHAZADA. Motivo: ${mensajeExtra}`;
-    }
+  // --- FUNCIONES SIMULADAS (SOLO VISUALES) ---
 
-    const url = `https://wa.me/?text=${encodeURIComponent(texto)}`;
-    window.open(url, '_blank');
+  enviarWhatsApp(cita: AppointmentSlot) {
+    // YA NO ABRE VENTANAS. Solo avisa que "ya lo hizo".
+    alert(`📱 SIMULACIÓN: Notificación por WhatsApp enviada correctamente a ${cita.clientName}.`);
   }
 
-  enviarCorreo(cita: AppointmentSlot, tipo: 'confirmar' | 'rechazar', mensajeExtra: string) {
-    console.log('📧 Intentando enviar correo a:', cita.clientEmail); // <--- CHIVATO EN CONSOLA
-
-    const asunto = tipo === 'confirmar' ? '✅ Cita Confirmada' : '❌ Actualización de tu Cita';
-    let cuerpo = '';
-
-    if (tipo === 'confirmar') {
-      cuerpo = `Hola ${cita.clientName},\n\nTu cita ha sido confirmada para el ${cita.date} a las ${cita.time}.\n\nMensaje del programador:\n${mensajeExtra}`;
-    } else {
-      cuerpo = `Hola ${cita.clientName},\n\nTu cita ha sido rechazada.\n\nMotivo:\n${mensajeExtra}`;
-    }
-
-    const emailDestino = cita.clientEmail;
-    if (!emailDestino) {
-        alert('⚠️ Error: Esta cita no tiene un correo guardado. No se puede abrir Gmail.');
-        return;
-    }
-    
-    const url = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${emailDestino}&su=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
-    
-    console.log('🔗 Link generado:', url);
-
-    const ventana = window.open(url, '_blank');
-
-    if (!ventana || ventana.closed || typeof ventana.closed == 'undefined') { 
-        alert('🚫 El navegador bloqueó la ventana de Gmail. Por favor revisa el icono de "Ventana emergente bloqueada" en la barra de direcciones (arriba a la derecha) y dale permiso.');
-    }
+  enviarCorreo(cita: AppointmentSlot) {
+    // YA NO ABRE GMAIL. Solo avisa.
+    alert(`📧 SIMULACIÓN: Correo electrónico enviado a ${cita.clientEmail || 'el cliente'}.`);
   }
+
+  // --- LÓGICA DE ACEPTAR / RECHAZAR ---
+
   async aceptarCita(slot: AppointmentSlot) {
     let mensajeInput = prompt('Mensaje de confirmación (Opcional):');
     if (mensajeInput === null) return;
@@ -82,13 +55,13 @@ export class ProgrammerAppointmentsComponent implements OnInit {
     try {
       await this.appointmentService.confirmAppointment(slot.id!, mensajeFinal);
       
-      if(confirm('✅ Cita confirmada. ¿Quieres enviar la notificación por WhatsApp ahora?')) {
-          this.enviarWhatsApp(slot, 'confirmar', mensajeFinal);
+      // Preguntamos si quiere "simular" el envío (para que se vea la intención)
+      if(confirm('✅ Cita confirmada en el sistema. ¿Simular envío de notificación por WhatsApp?')) {
+          this.enviarWhatsApp(slot);
       } 
       
- 
-      if (confirm('¿Quieres enviar también un Correo de respaldo?')) {
-          this.enviarCorreo(slot, 'confirmar', mensajeFinal);
+      if (confirm('¿Simular también envío por Correo?')) {
+          this.enviarCorreo(slot);
       }
       
       this.loadAppointments();
@@ -110,12 +83,13 @@ export class ProgrammerAppointmentsComponent implements OnInit {
     try {
       await this.appointmentService.rejectAppointment(slot.id!, motivo);
 
-      if(confirm('❌ Cita rechazada. ¿Notificar por WhatsApp?')) {
-          this.enviarWhatsApp(slot, 'rechazar', motivo);
+      // Preguntas de simulación
+      if(confirm('❌ Cita rechazada. ¿Simular aviso por WhatsApp?')) {
+          this.enviarWhatsApp(slot);
       } 
       
-      if (confirm('¿Enviar notificación por Correo también?')) {
-          this.enviarCorreo(slot, 'rechazar', motivo);
+      if (confirm('¿Simular aviso por Correo?')) {
+          this.enviarCorreo(slot);
       }
       
       this.loadAppointments();

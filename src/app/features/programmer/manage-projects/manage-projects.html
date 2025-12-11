@@ -1,10 +1,13 @@
-<div class="p-6 min-h-screen bg-base-200">
-  <h1 class="text-3xl font-bold mb-8 text-base-content"> Gestionar Mis Proyectos</h1>
+<div class="p-4 md:p-8 min-h-screen bg-base-200">
+  
+  <h1 class="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-base-content text-center xl:text-left">
+    Gestionar Mis Proyectos
+  </h1>
 
-  <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 md:gap-8">
     
     <div class="card bg-base-100 shadow-xl h-fit xl:col-span-1 xl:sticky xl:top-24">
-      <div class="card-body p-6">
+      <div class="card-body p-5 md:p-6">
         <h2 class="card-title text-xl mb-4"> Nuevo Proyecto</h2>
         
         <div class="form-control w-full">
@@ -14,11 +17,11 @@
             <input 
               [(ngModel)]="newProject.authorName" 
               type="text" 
-              placeholder="Ej: Ing. Sebastián Gómez" 
+              placeholder="Ej: Ing. Nombre Apellido" 
               class="input input-bordered w-full focus:input-primary font-bold text-primary" />
-          </div>
+        </div>
 
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-3 md:gap-4">
           
           <div class="form-control w-full">
             <label class="label">
@@ -41,21 +44,21 @@
             <label class="label">
               <span class="label-text font-semibold">Descripción <span class="text-error">*</span></span>
             </label>
-            <textarea [(ngModel)]="newProject.description" class="textarea textarea-bordered h-28 w-full resize-none focus:textarea-primary" placeholder="¿De qué trata el proyecto? Describe sus funcionalidades principales."></textarea>
+            <textarea [(ngModel)]="newProject.description" class="textarea textarea-bordered h-28 w-full resize-none focus:textarea-primary" placeholder="¿De qué trata el proyecto?"></textarea>
           </div>
 
           <div class="form-control w-full">
             <label class="label">
               <span class="label-text font-semibold">Tipo de Participación <span class="text-error">*</span></span>
             </label>
-            <input [(ngModel)]="newProject.role" type="text" placeholder="Ej: Frontend, Backend, Base de Datos..." class="input input-bordered w-full focus:input-primary" />
+            <input [(ngModel)]="newProject.role" type="text" placeholder="Ej: Frontend..." class="input input-bordered w-full focus:input-primary" />
           </div>
 
           <div class="form-control w-full">
             <label class="label">
-              <span class="label-text font-semibold">Tecnologías Utilizadas <span class="text-error">*</span></span>
+              <span class="label-text font-semibold">Tecnologías <span class="text-error">*</span></span>
             </label>
-            <input [(ngModel)]="newProject.technologies" type="text" placeholder="Ej: Angular 17, Firebase Auth, Tailwind CSS" class="input input-bordered w-full focus:input-primary" />
+            <input [(ngModel)]="newProject.technologies" type="text" placeholder="Ej: Angular, Firebase..." class="input input-bordered w-full focus:input-primary" />
           </div>
 
           <div class="divider text-sm font-semibold text-gray-400 my-2">Enlaces (Opcionales)</div>
@@ -64,26 +67,26 @@
             <label class="label pb-1">
               <span class="label-text flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                Link al Repositorio (Código)
+                Link Repositorio
               </span>
             </label>
-            <input [(ngModel)]="newProject.repoUrl" type="url" placeholder="https://github.com/tu-usuario/tu-repo" class="input input-bordered input-sm w-full focus:input-primary" />
+            <input [(ngModel)]="newProject.repoUrl" type="url" placeholder="https://github.com/..." class="input input-bordered input-sm w-full focus:input-primary" />
           </div>
 
           <div class="form-control w-full">
             <label class="label pb-1">
               <span class="label-text flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-globe"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                Link al Despliegue (Demo en vivo)
+                Link Demo
               </span>
             </label>
-            <input [(ngModel)]="newProject.demoUrl" type="url" placeholder="https://mi-proyecto.web.app" class="input input-bordered input-sm w-full focus:input-primary" />
+            <input [(ngModel)]="newProject.demoUrl" type="url" placeholder="https://..." class="input input-bordered input-sm w-full focus:input-primary" />
           </div>
 
         </div>
 
         <div class="card-actions justify-end mt-6">
-          <button (click)="add()" class="btn btn-primary w-full md:w-auto font-bold">
+          <button (click)="add()" class="btn btn-primary w-full md:w-auto font-bold text-white shadow-lg">
             Publicar Proyecto 
           </button>
         </div>
@@ -101,7 +104,7 @@
                 <h3 class="card-title text-lg font-bold leading-tight break-words group-hover:text-primary transition-colors">
                   {{ proj.name }}
                 </h3>
-                <div class="badge shrink-0 font-semibold text-xs uppercase" 
+                <div class="badge shrink-0 font-semibold text-xs uppercase text-white" 
                      [ngClass]="proj.projectType === 'Profesional' ? 'badge-secondary' : 'badge-accent'">
                   {{ proj.projectType }}
                 </div>
@@ -115,6 +118,9 @@
                 <p class="flex gap-2">
                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers text-base-content/70 shrink-0"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
                   <span><span class="font-semibold">Stack:</span> <span class="text-primary">{{ proj.technologies }}</span></span>
+                </p>
+                <p class="flex gap-2 text-xs text-gray-400">
+                    <span>Autor: <span class="font-bold">{{ proj.authorName }}</span></span>
                 </p>
               </div>
 
@@ -153,10 +159,9 @@
           <div class="col-span-full flex flex-col items-center justify-center p-10 bg-base-100 rounded-xl shadow-sm text-center opacity-70">
             <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder mb-4 text-base-content/30"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
             <h3 class="text-lg font-bold">Aún no tienes proyectos</h3>
-            <p>¡Completa el formulario a la izquierda para añadir el primero a tu portafolio!</p>
+            <p>¡Completa el formulario a la izquierda para añadir el primero!</p>
           </div>
         }
-
       </div>
     </div>
 

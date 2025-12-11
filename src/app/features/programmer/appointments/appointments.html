@@ -1,8 +1,11 @@
-<div class="p-8 min-h-screen bg-base-200">
-  <h1 class="text-3xl font-bold mb-6 text-primary"> Gestión de Asesorías</h1>
+<div class="p-4 md:p-8 min-h-screen bg-base-200">
+  
+  <h1 class="text-2xl md:text-3xl font-bold mb-6 text-primary"> Gestión de Asesorías</h1>
 
   @if (isLoading) {
-    <span class="loading loading-spinner loading-lg"></span>
+    <div class="flex justify-center">
+      <span class="loading loading-spinner loading-lg"></span>
+    </div>
   } @else if (appointments.length === 0) {
     <div class="alert shadow-lg">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -13,7 +16,7 @@
     </div>
   } @else {
     
-    <div class="grid gap-4 max-w-4xl">
+    <div class="grid gap-4 max-w-4xl mx-auto">
       @for (cita of appointments; track cita.id) {
         
         <div class="card bg-base-100 shadow-xl border-l-8"
@@ -23,33 +26,33 @@
                'border-error': cita.status === 'rejected'
              }">
           
-          <div class="card-body">
+          <div class="card-body p-5 md:p-8">
             
-            <div class="flex justify-between items-start">
-              <div>
-                <h2 class="card-title text-2xl font-black">
+            <div class="flex flex-col sm:flex-row justify-between items-start gap-3">
+              <div class="w-full">
+                <h2 class="card-title text-xl md:text-2xl font-black">
                   {{ cita.date }} <span class="text-base font-normal text-gray-500">| {{ cita.time }}</span>
                 </h2>
-                <p class="font-bold mt-1 text-primary">{{ cita.clientName }}</p>
+                <p class="font-bold mt-1 text-primary text-lg">{{ cita.clientName }}</p>
               </div>
 
               @if (!cita.status || cita.status === 'pending') {
-                <div class="badge badge-warning gap-2 p-3 font-bold">
-                   Pendiente
+                <div class="badge badge-warning gap-2 p-3 font-bold w-full sm:w-auto justify-center">
+                  Pendiente
                 </div>
               } @else if (cita.status === 'confirmed') {
-                <div class="badge badge-success text-white gap-2 p-3 font-bold">
-                  ✅ Confirmada
+                <div class="badge badge-success text-white gap-2 p-3 font-bold w-full sm:w-auto justify-center">
+                  Confirmada
                 </div>
               } @else if (cita.status === 'rejected') {
-                <div class="badge badge-error text-white gap-2 p-3 font-bold">
-                  ❌ Rechazada
+                <div class="badge badge-error text-white gap-2 p-3 font-bold w-full sm:w-auto justify-center">
+                  Rechazada
                 </div>
               }
             </div>
 
             <div class="my-4 p-3 bg-base-200 rounded-lg">
-              <p class="text-sm font-bold text-gray-500 uppercase text-xs">Motivo de la consulta:</p>
+              <p class="text-xs font-bold text-gray-500 uppercase">Motivo de la consulta:</p>
               <p class="italic text-gray-700">"{{ cita.topic }}"</p>
             </div>
 
@@ -60,18 +63,16 @@
             }
 
             @if (!cita.status || cita.status === 'pending') {
-              <div class="card-actions justify-end mt-2">
-                <button (click)="rechazarCita(cita)" class="btn btn-outline btn-error btn-sm">
-                  Rechazar ✕
+              <div class="card-actions flex flex-row justify-end mt-2 gap-3">
+                <button (click)="rechazarCita(cita)" class="btn btn-outline btn-error btn-sm flex-1 sm:flex-none">
+                  Rechazar
                 </button>
-                <button (click)="aceptarCita(cita)" class="btn btn-success text-white btn-sm">
-                  Aceptar ✅
+                <button (click)="aceptarCita(cita)" class="btn btn-success text-white btn-sm flex-1 sm:flex-none">
+                  Aceptar
                 </button>
               </div>
             }
             
-            
-
           </div>
         </div>
       }
