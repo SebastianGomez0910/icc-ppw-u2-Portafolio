@@ -42,4 +42,6 @@ export class ProjectService {
     const snap = await getDocs(ref);
     return snap.docs.map(doc => ({id: doc.id, ...doc.data() as any}));
   }
+
+  
 }
