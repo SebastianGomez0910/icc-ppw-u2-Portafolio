@@ -116,7 +116,7 @@ export class ProgrammerProjectsComponent implements OnInit {
     try {
       await this.projectService.addProject(this.newProject);
 
-      this.showCenteredMessage('🚀 Proyecto añadido exitosamente');
+      this.showCenteredMessage(' Proyecto añadido exitosamente');
 
       this.newProject = {
         programmerId: this.currentUser?.uid || '',
@@ -134,7 +134,7 @@ export class ProgrammerProjectsComponent implements OnInit {
 
     } catch (err) {
       console.error(err);
-      this.showCenteredMessage('❌ Error al publicar el proyecto.');
+      this.showCenteredMessage(' Error al publicar el proyecto.');
     }
   }
 
