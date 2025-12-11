@@ -20,26 +20,26 @@ export class Home implements OnInit {
 
   private datosManuales: any = {
     
-    'mateolopezmichon@hotmail.com': {
-      displayName: 'Sebastián Gómez',
+    'sebgomez395@gmail.com': {
+      displayName: 'SEbastian Gómez',
       specialty: 'FULL STACK DEVELOPER',
       description: 'Especialista en arquitectura frontend con Angular y soluciones escalables. Apasionado por el código limpio.',
-      photoURL: 'img/polloPP.jpg', 
+      photoURL: 'img/fotoS.png', 
       githubUrl: 'https://github.com/SebastianGomez0910',
-      contatoUrl: 'https://www.instagram.com/'
+      whatsappUrl: 'https://wa.me/593978759715'
     },
 
     'jeanpierre28.jpvv100@gmail.com': {
       displayName: 'Jean Pierre Valarezo ',
       specialty: 'BACKEND SPECIALIST',
       description: 'Experto en lógica de servidor, bases de datos y seguridad. Amante de los sistemas robustos.',
-      photoURL: 'img/chilly-willy.jpg',
+      photoURL: 'img/fotoJ.png',
       githubUrl: 'https://github.com/jean-pierre-valarezo',
-      contactoUrl: 'https://linkedin.com/in/jean-dev'
+      whatsappUrl: 'https://wa.me/593969382180'
     }
   };
 
-  images: string[] = ['img/polloPP.jpg', 'img/doraemon.webp', 'img/chilly-willy.jpg'];
+  images: string[] = ['img/simpsons.png', 'img/heuristicas.png', 'img/formulario.png'];
   imgDesplazada = 0;
   mostrarBotonArriba = false;
 

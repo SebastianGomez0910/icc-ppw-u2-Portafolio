@@ -13,7 +13,7 @@ export interface UserProfile {
   specialty?: string;      
   description?: string;    
   githubUrl?: string;      
-  linkedinUrl?: string;
+  whatsappUrl?: string;
 }
 
 @Injectable({
