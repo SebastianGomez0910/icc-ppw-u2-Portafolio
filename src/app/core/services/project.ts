@@ -7,7 +7,7 @@ export interface Project {
   authorName?: string;
   name: string;                
   description: string;
-  projectType: 'Académico' | 'Profesional'; 
+  projectType: 'Académico' | 'Profesional' | ''; 
   role: string;                
   technologies: string;        
   repoUrl?: string;            

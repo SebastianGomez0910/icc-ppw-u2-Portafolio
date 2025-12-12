@@ -120,7 +120,7 @@ export class ProgrammerProjectsComponent implements OnInit {
         authorName: this.currentUser?.displayName?.trim() || '',
         name: '',
         description: '',
-        projectType: 'Académico',
+        projectType: '',
         role: '',
         technologies: '',
         repoUrl: '',
