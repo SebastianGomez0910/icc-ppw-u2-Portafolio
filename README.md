@@ -9,7 +9,7 @@ Plataforma web desarrollada para la gestión de proyectos y usuarios según role
 **Universidad Politécnica Salesiana**  
 Carrera: Ingeniería en Ciencias de la Computación  
 Asignatura: Programación y Plataformas Web  
-Periodo: Interciclo  
+Periodo: 67
 
 ---
 
@@ -22,7 +22,7 @@ Periodo: Interciclo
   GitHub: https://github.com/SebastianGomez0910
 
 🔗 **Repositorio del proyecto:**  
-https://github.com/JeanPierreValarezo/icc-ppw-u2-Portafolio
+https://sebastiangomez0910.github.io/icc-ppw-u2-Portafolio/home
 
 ---
 
