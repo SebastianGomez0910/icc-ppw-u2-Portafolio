@@ -130,7 +130,4 @@ Permite a los administradores gestionar usuarios y roles, a los programadores ad
 ![Firebase3](firebase3.jpg)
 
 
-```ts
-
-await this.projectService.addProject(this.newProject);
 
