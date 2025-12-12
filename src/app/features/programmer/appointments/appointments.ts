@@ -31,20 +31,14 @@ export class ProgrammerAppointmentsComponent implements OnInit {
       this.cd.detectChanges();
     }
   }
-
-  // --- FUNCIONES SIMULADAS (SOLO VISUALES) ---
-
   enviarWhatsApp(cita: AppointmentSlot) {
-    // YA NO ABRE VENTANAS. Solo avisa que "ya lo hizo".
     alert(`📱 SIMULACIÓN: Notificación por WhatsApp enviada correctamente a ${cita.clientName}.`);
   }
 
   enviarCorreo(cita: AppointmentSlot) {
-    // YA NO ABRE GMAIL. Solo avisa.
     alert(`📧 SIMULACIÓN: Correo electrónico enviado a ${cita.clientEmail || 'el cliente'}.`);
   }
 
-  // --- LÓGICA DE ACEPTAR / RECHAZAR ---
 
   async aceptarCita(slot: AppointmentSlot) {
     let mensajeInput = prompt('Mensaje de confirmación (Opcional):');
@@ -55,8 +49,7 @@ export class ProgrammerAppointmentsComponent implements OnInit {
     try {
       await this.appointmentService.confirmAppointment(slot.id!, mensajeFinal);
       
-      // Preguntamos si quiere "simular" el envío (para que se vea la intención)
-      if(confirm('✅ Cita confirmada en el sistema. ¿Simular envío de notificación por WhatsApp?')) {
+      if(confirm(' Cita confirmada en el sistema. ¿Simular envío de notificación por WhatsApp?')) {
           this.enviarWhatsApp(slot);
       } 
       
@@ -83,8 +76,7 @@ export class ProgrammerAppointmentsComponent implements OnInit {
     try {
       await this.appointmentService.rejectAppointment(slot.id!, motivo);
 
-      // Preguntas de simulación
-      if(confirm('❌ Cita rechazada. ¿Simular aviso por WhatsApp?')) {
+      if(confirm(' Cita rechazada. ¿Simular aviso por WhatsApp?')) {
           this.enviarWhatsApp(slot);
       } 
       

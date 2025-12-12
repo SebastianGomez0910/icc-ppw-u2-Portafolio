@@ -1,45 +1,69 @@
-<div class="p-4 md:p-8 min-h-screen bg-base-200 flex justify-center items-center">
+<main class="p-4 md:p-8 min-h-screen bg-base-200 flex justify-center items-center">
   
-  <div class="card w-full max-w-2xl bg-base-100 shadow-xl">
+  <section class="card w-full max-w-3xl bg-base-100 shadow-xl" aria-labelledby="titulo-crear">
     <div class="card-body">
-      <h2 class="card-title text-2xl mb-6 text-center md:text-left">Crear Horario</h2>
+      
+      <h1 id="titulo-crear" class="card-title text-2xl mb-6 text-center md:text-left block">
+        📅 Crear Horario
+      </h1>
       
       <div class="form-control w-full mb-4">
-        <label class="label"><span class="label-text font-bold">1. Selecciona el Programador</span></label>
+        <label class="label" for="programador">
+          <span class="label-text font-bold">1. Selecciona el Programador</span>
+        </label>
         
-        <select [(ngModel)]="selectedProgrammerId" class="select select-bordered select-primary w-full">
+        <select id="programador" [(ngModel)]="selectedProgrammerId" class="select select-bordered select-primary w-full">
           <option value="" disabled selected>-- Elige un programador --</option>
           @for (prog of programmers; track prog.uid) {
             <option [value]="prog.uid">{{ prog.displayName || prog.email }}</option>
           }
         </select>
-        
-        @if (programmers.length === 0 && !isLoading) {
-          <span class="text-xs text-error mt-2">No hay programadores registrados.</span>
-        }
       </div>
 
       <div class="flex flex-col md:flex-row gap-4">
         
-        <div class="form-control w-full md:w-1/2">
-          <label class="label"><span class="label-text font-bold">2. Fecha</span></label>
-          <input type="date" [(ngModel)]="date" class="input input-bordered w-full" />
+        <div class="form-control w-full md:w-1/3">
+          <label class="label" for="fecha">
+            <span class="label-text font-bold">2. Desde (Fecha)</span>
+          </label>
+          <input id="fecha" type="date" [(ngModel)]="date" class="input input-bordered w-full" />
         </div>
 
-        <div class="form-control w-full md:w-1/2">
-          <label class="label"><span class="label-text font-bold">3. Hora</span></label>
-          <input type="time" [(ngModel)]="time" class="input input-bordered w-full" />
+        <div class="form-control w-full md:w-1/3">
+          <label class="label" for="fechaFin">
+            <span class="label-text font-bold">Hasta (Opcional)</span>
+            <span class="label-text-alt text-gray-400">Para rangos</span>
+          </label>
+          <input 
+            id="fechaFin" 
+            type="date" 
+            [(ngModel)]="endDate" 
+            [min]="date"
+            class="input input-bordered w-full" 
+            placeholder="Opcional"
+          />
+        </div>
+
+        <div class="form-control w-full md:w-1/3">
+          <label class="label" for="hora">
+            <span class="label-text font-bold">3. Hora</span>
+          </label>
+          <input id="hora" type="time" [(ngModel)]="time" class="input input-bordered w-full" />
         </div>
 
       </div>
 
       <div class="card-actions justify-end mt-8">
-        <button (click)="createSchedule()" class="btn btn-primary text-white w-full md:w-auto">
-          Crear Horario Disponible 
+        <button (click)="createSchedule()" class="btn btn-primary text-white w-full md:w-auto" [disabled]="!selectedProgrammerId || !date || !time">
+          @if (endDate) {
+            Crear Intervalo de Horarios 🗓️
+          } @else {
+            Crear Horario Individual 📅
+          }
         </button>
       </div>
 
     </div>
-  </div>
+  </section>
 
-</div>
+</main>

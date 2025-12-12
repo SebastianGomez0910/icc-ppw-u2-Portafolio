@@ -1,24 +1,24 @@
-<div class="min-h-screen flex bg-base-200">
+<main class="min-h-screen flex bg-base-200">
 
-  <div class="hidden lg:block lg:w-1/2 relative">
+  <aside class="hidden lg:block lg:w-1/2 relative">
     <img 
       src="https://www.viaempresa.cat/uploads/s1/26/28/39/85/istock-1140338911.jpeg" 
       class="absolute inset-0 w-full h-full object-cover" 
-      alt="Register Background"
-    />
+      alt="" 
+    /> 
     <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
       <div class="text-white text-center p-10">
-        <h1 class="text-5xl font-bold mb-4">Únete al Equipo</h1>
+        <h2 class="text-5xl font-bold mb-4">Únete al Equipo</h2>
         <p class="text-xl">Crea tu cuenta y empieza a construir</p>
       </div>
     </div>
-  </div>
+  </aside>
 
-  <div class="w-full lg:w-1/2 flex items-center justify-center p-8">
+  <section class="w-full lg:w-1/2 flex items-center justify-center p-8" aria-labelledby="register-title">
     <div class="card w-full max-w-md bg-base-100 shadow-2xl">
       <div class="card-body">
         
-        <h2 class="text-3xl font-bold text-center mb-2">Crear Cuenta</h2>
+        <h1 id="register-title" class="text-3xl font-bold text-center mb-2">Crear Cuenta</h1>
         <p class="text-center text-gray-500 mb-8">Completa tus datos para registrarte</p>
 
         @if (errorMessage) {
@@ -31,21 +31,52 @@
         <form (ngSubmit)="onRegister()">
           
           <div class="form-control mb-4">
-            <label class="label"><span class="label-text font-bold">Nombre Completo</span></label>
-            <input type="text" placeholder="Tu nombre" class="input input-bordered input-primary w-full" 
-                   [(ngModel)]="registerData.user" name="user" required />
+            <label class="label" for="fullName">
+              <span class="label-text font-bold">Nombre Completo</span>
+            </label>
+            <input 
+              id="fullName"
+              type="text" 
+              placeholder="Tu nombre" 
+              class="input input-bordered input-primary w-full" 
+              [(ngModel)]="registerData.user" 
+              name="user" 
+              required 
+              autocomplete="name"
+            />
           </div>
 
           <div class="form-control mb-4">
-            <label class="label"><span class="label-text font-bold">Correo Electrónico</span></label>
-            <input type="email" placeholder="ejemplo@correo.com" class="input input-bordered input-primary w-full" 
-                   [(ngModel)]="registerData.email" name="email" required />
+            <label class="label" for="email">
+              <span class="label-text font-bold">Correo Electrónico</span>
+            </label>
+            <input 
+              id="email"
+              type="email" 
+              placeholder="ejemplo@correo.com" 
+              class="input input-bordered input-primary w-full" 
+              [(ngModel)]="registerData.email" 
+              name="email" 
+              required 
+              autocomplete="email"
+            />
           </div>
 
           <div class="form-control mb-6">
-            <label class="label"><span class="label-text font-bold">Contraseña</span></label>
-            <input type="password" placeholder="********" class="input input-bordered input-primary w-full" 
-                   [(ngModel)]="registerData.password" name="password" required minlength="6"/>
+            <label class="label" for="password">
+              <span class="label-text font-bold">Contraseña</span>
+            </label>
+            <input 
+              id="password"
+              type="password" 
+              placeholder="********" 
+              class="input input-bordered input-primary w-full" 
+              [(ngModel)]="registerData.password" 
+              name="password" 
+              required 
+              minlength="6"
+              autocomplete="new-password"
+            />
             <label class="label">
               <span class="label-text-alt">Mínimo 6 caracteres</span>
             </label>
@@ -56,7 +87,7 @@
           </div>
         </form>
 
-        <div class="divider">O</div>
+        <div class="divider" role="separator">O</div>
 
         <div class="form-control">
           <button type="button" (click)="onGoogleRegister()" class="btn btn-outline btn-accent w-full gap-2">
@@ -73,5 +104,5 @@
 
       </div>
     </div>
-  </div>
-</div>
+  </section>
+</main>
