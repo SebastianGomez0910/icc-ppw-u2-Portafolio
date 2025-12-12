@@ -1,59 +1,133 @@
-# Portafolio
+#  Portafolio Administrativo – Proyecto Interciclo
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.7.
+Plataforma web desarrollada para la gestión de proyectos y usuarios según roles, implementada con **Angular** y **Firebase**, enfocada en buenas prácticas de desarrollo, validación de datos y control de acceso.
 
-## Development server
+---
 
-To start a local development server, run:
+##  Institución
 
-```bash
-ng serve
-```
+**Universidad Politécnica Salesiana**  
+Carrera: Ingeniería en Ciencias de la Computación  
+Asignatura: Programación y Plataformas Web  
+Periodo: 67
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+---
 
-## Code scaffolding
+##  Integrantes
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- **Jean Pierre Valarezo Villalta**  
+  GitHub: https://github.com/jean-pierre-valarezo
 
-```bash
-ng generate component component-name
-```
+   - **Sebastian Gomez**  
+  GitHub: https://github.com/SebastianGomez0910
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+🔗 **Repositorio del proyecto:**  
+https://sebastiangomez0910.github.io/icc-ppw-u2-Portafolio/home
 
-```bash
-ng generate --help
-```
+---
 
-## Building
+##  Tecnologías Utilizadas
 
-To build the project run:
+### Frontend
+- Angular
+- TypeScript
+- Tailwind CSS
+- DaisyUI
 
-```bash
-ng build
-```
+### Backend / Servicios
+- Firebase Authentication
+- Firebase Firestore
+- Firebase Hosting
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+---
 
-## Running unit tests
+##  Descripción del Proyecto
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+El **Portafolio Administrativo** es una aplicación web que permite gestionar proyectos académicos y profesionales mediante un sistema de roles.  
+El sistema controla el acceso a las funcionalidades según el tipo de usuario, asegurando una correcta organización de la información y una experiencia de uso clara y segura.
 
-```bash
-ng test
-```
+Permite a los administradores gestionar usuarios y roles, a los programadores administrar sus proyectos y a los usuarios generales visualizar información de forma controlada.
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+##  Roles y Funcionalidades
 
-```bash
-ng e2e
-```
+###  Administrador
+- Inicio de sesión seguro.
+- Acceso al panel administrativo.
+- Gestión de usuarios y roles.
+- Visualización global de proyectos.
+- Control de permisos del sistema.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+###  Programador
+- Acceso a su panel de trabajo.
+- Creación de proyectos académicos o profesionales.
+- Edición y eliminación de sus proyectos.
+- Validación de datos antes del guardado.
+- Persistencia de datos en Firebase Firestore.
 
-## Additional Resources
+###  Usuario General
+- Inicio de sesión.
+- Visualización de proyectos disponibles.
+- Acceso limitado según permisos asignados.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+---
+
+##  Módulos y Pantallas del Sistema
+
+- Página principal
+- Login
+- Panel Administrador
+- Gestión de usuarios
+- Gestión de roles
+- Panel del programador
+- Gestión de proyectos
+- Visualización de proyectos
+- Perfil de usuario
+
+---
+
+##  Flujos Principales del Sistema
+
+### Flujo de Autenticación
+1. El usuario ingresa sus credenciales.
+2. Firebase valida la autenticación.
+3. El sistema identifica el rol del usuario.
+4. Se redirige al panel correspondiente.
+
+### Flujo de Creación de Proyectos
+1. El programador completa el formulario.
+2. El sistema valida los campos obligatorios.
+3. Se validan enlaces con `http://` o `https://`.
+4. Los datos se almacenan en Firebase Firestore.
+5. El proyecto se refleja automáticamente en la interfaz.
+
+---
+
+##  Fragmentos Técnicos Importantes
+
+### Guardado de proyectos en Firebase
+
+### Evidencias
+![Usuario](usuario.jpg)
+
+![Evidencia1](evidencia1.jpg)
+
+![Evidencia2](evidencia2.jpg)
+
+![Evidencia3](evidencia3.jpg)
+
+![programador](programador.jpg)
+
+![Admin](admin.jpg)
+
+![Admin2](admin2.jpg)
+
+![Firebase1](firebase1.jpg)
+
+![Firebase2](firebase2.jpg)
+
+![Firebase3](firebase3.jpg)
+
+
+
