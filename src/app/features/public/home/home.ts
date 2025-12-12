@@ -21,7 +21,7 @@ export class Home implements OnInit {
   private datosManuales: any = {
     
     'sebgomez395@gmail.com': {
-      displayName: 'SEbastian Gómez',
+      displayName: 'Sebastian Gómez',
       specialty: 'FULL STACK DEVELOPER',
       description: 'Especialista en arquitectura frontend con Angular y soluciones escalables. Apasionado por el código limpio.',
       photoURL: 'img/fotoS.png', 
