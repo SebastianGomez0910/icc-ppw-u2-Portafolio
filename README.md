@@ -50,7 +50,7 @@ Permite a los administradores gestionar usuarios y roles, a los programadores ad
 
 ---
 
-## 👤 Roles y Funcionalidades
+##  Roles y Funcionalidades
 
 ###  Administrador
 - Inicio de sesión seguro.
@@ -107,7 +107,30 @@ Permite a los administradores gestionar usuarios y roles, a los programadores ad
 ##  Fragmentos Técnicos Importantes
 
 ### Guardado de proyectos en Firebase
-```ts
-await this.projectService.addProject(this.newProject);
 
+### Evidencias
+![Usuario](usuario.jpg)
+
+![Evidencia1](evidencia1.jpg)
+
+![Evidencia2](evidencia2.jpg)
+
+![Evidencia3](evidencia3.jpg)
+
+![programador](programador.jpg)
+
+![Admin](admin.jpg)
+
+![Admin2](admin2.jpg)
+
+![Firebase1](firebase1.jpg)
+
+![Firebase2](firebase2.jpg)
+
+![Firebase3](firebase3.jpg)
+
+
+```ts
+
+await this.projectService.addProject(this.newProject);
 
