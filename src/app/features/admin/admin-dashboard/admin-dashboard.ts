@@ -98,7 +98,7 @@ export class AdminScheduleComponent implements OnInit {
 
       await batch.commit();
 
-      alert(`✅ ¡Listo! Se crearon ${count} horarios correctamente.`);
+      alert(` ¡Listo! Se crearon ${count} horarios correctamente.`);
       
       this.date = '';
       this.endDate = '';

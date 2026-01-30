@@ -66,7 +66,7 @@ export class ManageUsers implements OnInit {
         
       } catch (error) {
         console.error('ERROR AL ACTUALIZAR EN FIREBASE:', error);
-        alert('Hubo un error al guardar. Revisa la consola (F12).');
+        alert('Hubo un error al guardar. Revisa la consola.');
 
       }
     } else {

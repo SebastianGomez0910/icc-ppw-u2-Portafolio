@@ -52,7 +52,6 @@ export class ProgrammerProjectsComponent implements OnInit {
     }
   }
 
-  // Mostrar mensaje modal
   showCenteredMessage(text: string) {
     this.messageText = text;
     this.showMessage = true;
@@ -61,7 +60,6 @@ export class ProgrammerProjectsComponent implements OnInit {
     }, 2500);
   }
 
-  // VALIDACIONES
   validateForm(): string | null {
 
     const author = this.newProject.authorName?.trim();
@@ -69,7 +67,6 @@ export class ProgrammerProjectsComponent implements OnInit {
     if (!author)
       return 'El nombre del autor es obligatorio.';
 
-    // No permitir correos
     if (author.includes('@'))
       return 'El nombre del autor no puede ser un correo.';
 

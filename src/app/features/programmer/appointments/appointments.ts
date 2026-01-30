@@ -32,11 +32,11 @@ export class ProgrammerAppointmentsComponent implements OnInit {
     }
   }
   enviarWhatsApp(cita: AppointmentSlot) {
-    alert(`📱 SIMULACIÓN: Notificación por WhatsApp enviada correctamente a ${cita.clientName}.`);
+    alert(` SIMULACIÓN: Notificación por WhatsApp enviada correctamente a ${cita.clientName}.`);
   }
 
   enviarCorreo(cita: AppointmentSlot) {
-    alert(`📧 SIMULACIÓN: Correo electrónico enviado a ${cita.clientEmail || 'el cliente'}.`);
+    alert(` SIMULACIÓN: Correo electrónico enviado a ${cita.clientEmail || 'el cliente'}.`);
   }
 
 
@@ -49,11 +49,11 @@ export class ProgrammerAppointmentsComponent implements OnInit {
     try {
       await this.appointmentService.confirmAppointment(slot.id!, mensajeFinal);
       
-      if(confirm(' Cita confirmada en el sistema. ¿Simular envío de notificación por WhatsApp?')) {
+      if(confirm(' Cita confirmada en el sistema.  envío de notificación por WhatsApp?')) {
           this.enviarWhatsApp(slot);
       } 
       
-      if (confirm('¿Simular también envío por Correo?')) {
+      if (confirm(' también envío por Correo?')) {
           this.enviarCorreo(slot);
       }
       

@@ -97,7 +97,7 @@ export class RequestAppointmentComponent implements OnInit {
             this.bookingTopic
          );
          
-         alert('✅ ¡Cita agendada! El programador ha sido notificado.');
+         alert(' ¡Cita agendada! El programador ha sido notificado.');
          this.bookingTopic = '';
          
          await this.onProgrammerChange(); 

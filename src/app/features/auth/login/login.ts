@@ -37,7 +37,7 @@ export class Login {
         this.router.navigate(['/programmer/projects'])
       }
       else {
-        console.log('👤 Usuario detectado. Yendo al inicio...');
+        console.log(' Usuario detectado. Yendo al inicio...');
         this.router.navigate(['/home']);
       }
     } catch (error) {
