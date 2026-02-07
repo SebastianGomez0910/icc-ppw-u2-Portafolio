@@ -1,79 +1,43 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, effect, ChangeDetectorRef } from '@angular/core';
-import { RouterLink, Router } from '@angular/router';
-import { AuthService } from '../../../core/services/firebase/auth';
-import { UserService } from '../../../core/services/roles/user-service';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
+import { RouterLink, Router, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, CommonModule],
+  standalone: true, 
+  imports: [RouterLink, CommonModule, RouterLinkActive],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
 export class Navbar {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private cd = inject(ChangeDetectorRef);
 
-  public AuthService=inject(AuthService);
-  private router=inject(Router);
-  private UserService=inject(UserService);
-  private cd =inject(ChangeDetectorRef);
-
-  isAdmin=false;
-  isProgramer=false;
-
-  irInicio(){
-    window.scrollTo({top:0,behavior:'smooth'});
+  user() {
+    const userData = localStorage.getItem('user');
+    return userData ? JSON.parse(userData) : null;
   }
 
-  logout(){
-    this.AuthService.logout().subscribe(()=>{
-      this.router.navigate(['/login'])
-    })
+  get isAdmin(): boolean {
+    return this.authService.getRole() === 'ROLE_ADMIN';
+  }
+
+  get isProgramer(): boolean {
+    return this.authService.getRole() === 'ROLE_PROGRAMMER';
+  }
+
+  irInicio() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  logout() {
+    this.authService.logout(); 
+    this.router.navigate(['/login']);
   }
 
   solicitarRol() {
-    const user = this.AuthService.currentUser();
-    if (user) {
-      this.UserService.requestProgrammerRole(user.uid)
-        .then(() => {
-          alert('¡Solicitud enviada! Un administrador revisará tu perfil.');
-        })
-        .catch(err => console.error(err));
-    }
-  }
-
-  constructor() {
-    effect(() => {
-      const user = this.AuthService.currentUser();
-      if (user) {
-        console.log('Navbar: Usuario detectado, verificando rol...', user.email);
-        this.checkUserRole(user.uid);
-      } else {
-        console.log('Navbar: No hay usuario, reseteando menú.');
-        this.isAdmin = false;
-        this.isProgramer = false;
-        this.cd.detectChanges(); 
-      }
-    });
-  }
-
-  async checkUserRole(uid: string) {
-    try {
-      console.log('--- BUSCANDO EN BASE DE DATOS EL ID:', uid);
-      const profile = await this.UserService.getUserById(uid);
-      
-      console.log('Navbar: Perfil descargado de Firebase:', profile); 
-
-      if (profile) {
-        this.isAdmin = profile.role === 'admin';
-        this.isProgramer = profile.role === 'programmer'; 
-
-        console.log('¿Es Admin?', this.isAdmin);
-        console.log('¿Es Programador?', this.isProgramer);
-      }
-    } catch (error) {
-      console.error('Navbar: Error al obtener el rol', error);
-    } finally {
-      this.cd.detectChanges();
-    }
+    alert('Esta funcionalidad se conectará con el Backend de Java pronto.');
   }
 }

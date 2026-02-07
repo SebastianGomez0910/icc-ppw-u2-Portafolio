@@ -2,7 +2,7 @@ import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserProfile, UserService } from '../../../../core/services/roles/user-service';
-import { AppointmentService, AppointmentSlot } from '../../../../core/services/appointment'; // O appointment.service
+import { AppointmentService, AppointmentSlot } from '../../../../core/models/appointment'; // O appointment.service
 import { AuthService } from '../../../../core/services/firebase/auth'; 
 
 @Component({

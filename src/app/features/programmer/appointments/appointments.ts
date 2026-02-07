@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/firebase/auth';
-import { AppointmentService, AppointmentSlot } from '../../../core/services/appointment';
+import { AppointmentService, AppointmentSlot } from '../../../core/models/appointment';
 
 @Component({
   selector: 'app-programmer-appointments',

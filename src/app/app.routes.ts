@@ -4,7 +4,6 @@ import { Login } from './features/auth/login/login';
 import { Register } from './features/auth/register/register/register';
 import { ManageUsers } from './features/admin/manage-users/manage-users';
 import { AdminScheduleComponent } from './features/admin/admin-dashboard/admin-dashboard';
-import { Appointment } from './core/models/appointment';
 import { ProgrammerAppointmentsComponent } from './features/programmer/appointments/appointments';
 import { ProgrammerProjectsComponent } from './features/programmer/manage-projects/manage-projects';
 import { RequestAppointmentComponent } from './features/public/solicitud/solicitud-appointment/solicitud-appointment';
@@ -50,5 +49,10 @@ export const routes: Routes = [
     {
         path:'proyectos',
         component:PublicProjectsComponent
+    },
+    {
+        path: 'mis-citas',
+        loadComponent: () => import('./features/public/my-appointments/my-appointments').then(m => m.MyAppointments),
+        canActivate: [authGuard]
     }
 ];

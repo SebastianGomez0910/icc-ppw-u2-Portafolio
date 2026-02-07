@@ -5,8 +5,9 @@ import { routes } from './app.routes';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
 
-// Tu configuración (está perfecta)
 const firebaseConfig = {
   apiKey: "AIzaSyCzaT4ySxwJ673ITuY9t-p9PVYPtdR0vKU",
   authDomain: "portafolio-40c15.firebaseapp.com",
@@ -25,6 +26,8 @@ export const appConfig: ApplicationConfig = {
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
 
     provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()) 
+    provideFirestore(() => getFirestore()),
+    provideHttpClient(
+      withInterceptors([jwtInterceptor]))
   ]
 };

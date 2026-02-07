@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../../../core/services/firebase/auth';
+import { AuthService } from '../../../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -15,35 +15,33 @@ export class Register {
   private router = inject(Router);
 
   registerData = {
-    user: '', 
+    name: '', 
     email: '',
-    password: ''
+    password: '',
+    role: 'USER' 
   };
 
   errorMessage = '';
 
   onRegister() {
-    this.authService.register(this.registerData.email, this.registerData.password)
-      .subscribe({
-        next: () => {
-          console.log('Usuario registrado con éxito');
-          this.router.navigate(['/home']); 
-        },
-        error: (err) => {
-          console.error('Error:', err);
-          if (err.code === 'auth/email-already-in-use') {
-            this.errorMessage = 'Este correo ya está registrado.';
-          } else {
-            this.errorMessage = 'Error al registrarse. Intenta de nuevo.';
-          }
+    this.authService.register(this.registerData).subscribe({
+      next: () => {
+        console.log('Usuario registrado con éxito en la base de datos SQL');
+        this.router.navigate(['/auth/login']); 
+      },
+      error: (err) => {
+        console.error('Error:', err);
+        if (err.status === 409) {
+          this.errorMessage = 'Este correo ya está registrado en el sistema.';
+        } else {
+          this.errorMessage = 'Hubo un problema con el servidor. Intenta más tarde.';
         }
-      });
-  }
-  
-  onGoogleRegister() {
-    this.authService.loginWithGoogle().subscribe({
-        next: () => this.router.navigate(['/home']),
-        error: (err) => console.error(err)
+      }
     });
+  }
+
+  onGoogleRegister() {
+    console.log('Registro con Google pausado para priorizar autenticación propia (JWT).');
+    alert('Por favor, usa el formulario de registro para esta entrega.');
   }
 }

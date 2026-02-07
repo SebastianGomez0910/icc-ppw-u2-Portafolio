@@ -1,8 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../../core/services/firebase/auth';
-import { UserService } from '../../../core/services/roles/user-service';
+import { AuthService } from '../../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +13,6 @@ import { UserService } from '../../../core/services/roles/user-service';
 export class Login {
 
   private authService = inject(AuthService);
-  private userService = inject(UserService); 
   private router = inject(Router);
 
   loginData = {
@@ -24,33 +22,28 @@ export class Login {
 
   errorMessage = '';
 
-  async redirigirSegunRol(uid: string) {
-    try {
-      const profile = await this.userService.getUserById(uid);
-      
-      if (profile?.role === 'admin') {
-        console.log('Admin detectado. Yendo al panel.');
-        this.router.navigate(['/admin']); 
-      } 
-      else if (profile?.role == 'programmer'){
-        console.log('Programador detectado. Yendo al panel.')
-        this.router.navigate(['/programmer/projects'])
-      }
-      else {
-        console.log(' Usuario detectado. Yendo al inicio...');
-        this.router.navigate(['/home']);
-      }
-    } catch (error) {
-      console.error('Error al redirigir:', error);
-      this.router.navigate(['/home']); 
+  redirigirSegunRol(role: string) {
+    const userRole = role.toUpperCase(); 
+    
+    if (userRole === 'ADMIN') {
+      console.log('Admin detectado. Yendo al panel.');
+      this.router.navigate(['/admin']); 
+    } 
+    else if (userRole === 'PROGRAMMER'){
+      console.log('Programador detectado. Yendo al panel.')
+      this.router.navigate(['/programmer/projects'])
+    }
+    else {
+      console.log('Usuario detectado. Yendo al inicio...');
+      this.router.navigate(['/home']);
     }
   }
 
   onLogin() {
-    this.authService.login(this.loginData.email, this.loginData.password)
+    this.authService.login(this.loginData)
       .subscribe({
-        next: async (res) => {
-          await this.redirigirSegunRol(res.user.uid);
+        next: (res) => {
+          this.redirigirSegunRol(res.role);
         },
         error: (err) => {
           console.error('Error:', err);
@@ -60,15 +53,7 @@ export class Login {
   }
 
   onGoogleLogin() {
-    this.authService.loginWithGoogle()
-      .subscribe({
-        next: async (res) => {
-          await this.redirigirSegunRol(res.user.uid);
-        },
-        error: (err) => {
-          console.error('Error con Google:', err);
-          this.errorMessage = 'Hubo un problema al ingresar con Google';
-        }
-      });
-  }
+  console.log('Login con Google deshabilitado temporalmente para priorizar JWT según la rúbrica');
+  alert('Esta funcionalidad se activará después. Por ahora usa el correo y contraseña.');
+}
 }

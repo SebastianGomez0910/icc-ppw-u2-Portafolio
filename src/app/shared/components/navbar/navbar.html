@@ -17,6 +17,10 @@
           <li><a routerLink="/home" (click)="irInicio()">Inicio</a></li>
           <li><a routerLink="/proyectos">Proyectos</a></li>
           <li><a routerLink="/asesorias">Asesorías</a></li>
+          
+          @if (user()) {
+             <li><a routerLink="/mis-citas" class="font-bold text-primary"> Mis Citas</a></li>
+          }
         }
       </ul>
     </div>
@@ -44,23 +48,34 @@
         <li><a routerLink="/home" (click)="irInicio()">Inicio</a></li>
         <li><a routerLink="/proyectos">Proyectos</a></li>
         <li><a routerLink="/asesorias">Asesorías</a></li>
+        
+        @if (user()){
+          <li>
+            <a routerLink="/mis-citas" routerLinkActive="active" class="font-semibold">
+               Mis citas
+            </a>
+          </li>
+        }
       }
     </ul>
   </div>
 
   <div class="navbar-end">
     
-    @if (AuthService.currentUser()) {
+    @if (user()) {
       <div class="dropdown dropdown-end">
         <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar" aria-label="Menú de usuario">
           <div class="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-             <img [src]="AuthService.currentUser()?.photoURL || 'https://ui-avatars.com/api/?name=' + AuthService.currentUser()?.email" alt="Foto de perfil de {{ AuthService.currentUser()?.email }}"/>
+             <img [src]="'https://ui-avatars.com/api/?name=' + (user()?.name || user()?.email) + '&background=random'" alt="Avatar"/> 
           </div>
         </div>
         <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
           <li class="menu-title px-4 py-2 text-xs text-gray-500">
-             {{ AuthService.currentUser()?.email }}
+             {{ user()?.email }}
           </li>
+          @if (!isAdmin && !isProgramer) {
+             <li><a routerLink="/mis-citas"> Mis Citas</a></li>
+          }
           <div class="divider my-0" role="separator"></div>
           <li><button (click)="logout()" class="text-red-500 font-bold">Cerrar Sesión</button></li>
         </ul>

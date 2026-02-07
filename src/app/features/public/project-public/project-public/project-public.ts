@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Project, ProjectService } from '../../../../core/services/project';
+import { Project, ProjectService } from '../../../../core/models/project';
 import { UserService } from '../../../../core/services/roles/user-service';
 
 @Component({

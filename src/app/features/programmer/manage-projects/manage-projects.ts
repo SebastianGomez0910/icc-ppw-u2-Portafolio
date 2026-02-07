@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Project, ProjectService } from '../../../core/services/project';
+import { Project, ProjectService } from '../../../core/models/project';
 import { AuthService } from '../../../core/services/firebase/auth';
 import { ValidationService } from '../../../shared/services/validation.service';
 
