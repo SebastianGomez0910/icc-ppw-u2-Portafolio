@@ -21,8 +21,9 @@
               (change)="onProgrammerChange()" 
               class="select select-bordered select-primary w-full">
               <option value="" disabled selected>-- Selecciona --</option>
-              @for (prog of programmers; track prog.uid) {
-                <option [value]="prog.uid">{{ prog.displayName || prog.email }}</option>
+              
+              @for (prog of programmers; track prog.id) {
+                <option [value]="prog.id">{{ prog.name || prog.email }}</option>
               }
             </select>
           </div>
@@ -95,7 +96,7 @@
 
         @if (!selectedProgrammerId) {
           <div class="alert shadow-lg bg-base-100" role="alert">
-            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <div>
               <h3 class="font-bold">Empieza seleccionando un Experto</h3>
             </div>
@@ -128,7 +129,7 @@
                   <h3 class="text-3xl font-black text-base-content">{{ slot.time }}</h3>
                   
                   <div class="mt-4 w-full">
-                      @if (authService.currentUser()) {
+                      @if (isLoggedIn) {
                           <button 
                             (click)="book(slot)" 
                             [disabled]="!bookingTopic"
@@ -148,7 +149,6 @@
             }
           </div>
         }
-
       </section>
     </div>
   </div>

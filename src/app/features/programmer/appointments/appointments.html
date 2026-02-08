@@ -22,9 +22,9 @@
         
         <article class="card bg-base-100 shadow-xl border-l-8"
              [ngClass]="{
-               'border-warning': !cita.status || cita.status === 'pending',
-               'border-success': cita.status === 'confirmed',
-               'border-error': cita.status === 'rejected'
+               'border-warning': !cita.status || cita.status === 'PENDING',
+               'border-success': cita.status === 'CONFIRMED',
+               'border-error': cita.status === 'REJECTED'
              }">
           
           <div class="card-body p-5 md:p-8">
@@ -34,18 +34,18 @@
                 <h2 class="card-title text-xl md:text-2xl font-black">
                   {{ cita.date }} <span class="text-base font-normal text-gray-500">| {{ cita.time }}</span>
                 </h2>
-                <p class="font-bold mt-1 text-primary text-lg">{{ cita.clientName }}</p>
+                <p class="font-bold mt-1 text-primary text-lg">{{ cita.clientName || 'Cliente Registrado' }}</p>
               </div>
 
-              @if (!cita.status || cita.status === 'pending') {
+              @if (!cita.status || cita.status === 'PENDING') {
                 <span class="badge badge-warning gap-2 p-3 font-bold w-full sm:w-auto justify-center">
                   Pendiente
                 </span>
-              } @else if (cita.status === 'confirmed') {
+              } @else if (cita.status === 'CONFIRMED') {
                 <span class="badge badge-success text-white gap-2 p-3 font-bold w-full sm:w-auto justify-center">
                   Confirmada
                 </span>
-              } @else if (cita.status === 'rejected') {
+              } @else if (cita.status === 'REJECTED') {
                 <span class="badge badge-error text-white gap-2 p-3 font-bold w-full sm:w-auto justify-center">
                   Rechazada
                 </span>
@@ -54,16 +54,16 @@
 
             <div class="my-4 p-3 bg-base-200 rounded-lg">
               <p class="text-xs font-bold text-gray-500 uppercase">Motivo de la consulta:</p>
-              <p class="italic text-gray-700">"{{ cita.topic }}"</p>
+              <p class="italic text-gray-700">"{{ cita.topic || 'Sin motivo especificado' }}"</p>
             </div>
 
-            @if (cita.status === 'rejected') {
+            @if (cita.status === 'REJECTED') {
               <div class="alert alert-error shadow-sm text-white p-2 text-sm" role="alert">
                 <span class="font-bold">Motivo del rechazo:</span> {{ cita.rejectionReason }}
               </div>
             }
 
-            @if (!cita.status || cita.status === 'pending') {
+            @if (!cita.status || cita.status === 'PENDING') {
               <footer class="card-actions flex flex-row justify-end mt-2 gap-3">
                 <button (click)="rechazarCita(cita)" class="btn btn-outline btn-error btn-sm flex-1 sm:flex-none">
                   Rechazar

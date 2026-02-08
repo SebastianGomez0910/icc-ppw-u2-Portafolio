@@ -1,99 +1,75 @@
-import { inject, Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, query, where, getDocs, updateDoc, doc, deleteDoc, orderBy } from '@angular/fire/firestore';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
 
 export interface AppointmentSlot {
-  id?: string;
-  programmerId: string;
-  programmerName: string;
-  date: string;
-  time: string;
+  id: string;
+  programmerId?: string; 
+  programmerName?: string;
+  date: string;          
+  time: string;          
   isBooked: boolean;
+  
   clientName?: string;
   topic?: string;
-  status?: 'pending' | 'confirmed' | 'rejected'; 
-  rejectionReason?: string;                      
+  status?: 'PENDING' | 'CONFIRMED' | 'REJECTED'; 
+  rejectionReason?: string;
   confirmationMessage?: string;
-  clientId?: string;    
-  clientEmail?: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppointmentService {
-  private firestore = inject(Firestore);
 
-  async addAvailability(slot: AppointmentSlot) {
-    const slotsRef = collection(this.firestore, 'appointments');
-    return addDoc(slotsRef, { ...slot, status: 'pending' }); 
+  private apiUrl = 'http://localhost:8080/api/schedules';
+
+  constructor(private http: HttpClient) {}
+
+  private getHeaders() {
+    const token = localStorage.getItem('token');
+    return {
+      headers: new HttpHeaders({ 'Authorization': `Bearer ${token}` })
+    };
   }
 
-  async getAllSlots() {
-    const slotsRef = collection(this.firestore, 'appointments');
-    const q = query(slotsRef, orderBy('date'));
-    const snap = await getDocs(q);
-    return snap.docs.map(doc => ({id: doc.id, ...doc.data() as any}));
-  }
-  
-  deleteSlot(id: string) {
-    const docRef = doc(this.firestore, `appointments/${id}`);
-    return deleteDoc(docRef);
-  }
-
-  async getAvailableSlots(programmerId: string) {
-    const slotsRef = collection(this.firestore, 'appointments');
-    const q = query(
-      slotsRef, 
-      where('programmerId', '==', programmerId),
-      where('isBooked', '==', false)
+  getAvailableSlots(programmerId: string): Observable<AppointmentSlot[]> {
+    return this.http.get<AppointmentSlot[]>(
+      `${this.apiUrl}/available/${programmerId}`, 
+      this.getHeaders()
     );
-    const snap = await getDocs(q);
-    return snap.docs.map(doc => ({id: doc.id, ...doc.data() as any}));
   }
 
-  bookSlot(slotId: string, clientName: string, clientEmail: string, clientId: string, topic: string) {
-    const docRef = doc(this.firestore, `appointments/${slotId}`);
-    return updateDoc(docRef, {
-      isBooked: true,
-      clientName: clientName,
-      clientEmail: clientEmail, 
-      clientId: clientId,
-      topic: topic,
-      status: 'pending' 
-    });
-  }
-
-  async getMyAppointments(programmerId: string) {
-    const slotsRef = collection(this.firestore, 'appointments');
-    const q = query(
-      slotsRef, 
-      where('programmerId', '==', programmerId),
-      where('isBooked', '==', true)
+  bookSlot(slotId: string, topic: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/${slotId}/book`, 
+      { topic: topic }, 
+      this.getHeaders()
     );
-    const snap = await getDocs(q);
-    return snap.docs.map(doc => ({id: doc.id, ...doc.data() as any}));
   }
 
-  confirmAppointment(slotId: string, message: string) {
-    const docRef = doc(this.firestore, `appointments/${slotId}`);
-    return updateDoc(docRef, {
-      status: 'confirmed',
-      confirmationMessage: message 
-    });
+  getClientAppointments(): Observable<AppointmentSlot[]> {
+    return this.http.get<AppointmentSlot[]>(`${this.apiUrl}/client`, this.getHeaders());
   }
 
-  rejectAppointment(slotId: string, reason: string) {
-    const docRef = doc(this.firestore, `appointments/${slotId}`);
-    return updateDoc(docRef, {
-      status: 'rejected',
-      rejectionReason: reason
-    });
+  getProgrammerAppointments(): Observable<AppointmentSlot[]> {
+    return this.http.get<AppointmentSlot[]>(`${this.apiUrl}/programmer`, this.getHeaders());
   }
 
-  async getClientAppointments(clientId: string) {
-    const slotsRef = collection(this.firestore, 'appointments');
-    const q = query(slotsRef, where('clientId', '==', clientId));
-    const snap = await getDocs(q);
-    return snap.docs.map(doc => ({id: doc.id, ...doc.data() as any}));
+  confirmAppointment(slotId: string, message: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/${slotId}/confirm`, 
+      { message: message }, 
+      this.getHeaders()
+    );
+  }
+
+  rejectAppointment(slotId: string, reason: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/${slotId}/reject`, 
+      { reason: reason }, 
+      this.getHeaders()
+    );
   }
 }

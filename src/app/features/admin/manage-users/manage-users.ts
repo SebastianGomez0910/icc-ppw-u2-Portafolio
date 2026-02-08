@@ -13,7 +13,7 @@ import { UserService, UserProfile } from '../../../core/services/roles/user-serv
 export class ManageUsers implements OnInit {
 
   private userService = inject(UserService);
-  private cd=inject(ChangeDetectorRef)
+  private cd = inject(ChangeDetectorRef);
   
   allUsers: UserProfile[] = [];
   isLoading = true;
@@ -22,90 +22,66 @@ export class ManageUsers implements OnInit {
     this.loadRequests();
   }
 
-  async loadRequests() {
-    console.log('--- INICIANDO CARGA DE SOLICITUDES ---');
+  loadRequests() {
     this.isLoading = true;
-
-    try {
-      console.log('Consultando a Firebase...');
-      this.allUsers = await this.userService.getAllUsers();
-      
-      console.log('Respuesta recibida. Usuarios encontrados:', this.allUsers.length);
-      console.log('Datos:', this.allUsers);
-
-    } catch (error) {
-      console.error('ERROR GRAVE cargando usuarios:', error);
-      alert('Error al leer datos. Revisa la consola.');
-    } finally {
-      this.isLoading = false;
-      console.log('--- FIN DEL PROCESO (isLoading = false) ---');
-      this.cd.detectChanges(); 
-    }
+    this.userService.getAllUsers().subscribe({
+      next: (data) => {
+        this.allUsers = data;
+        this.isLoading = false;
+        this.cd.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error cargando usuarios:', err);
+        alert('No se pudieron cargar los usuarios. Revisa el token o el backend.');
+        this.isLoading = false;
+        this.cd.detectChanges();
+      }
+    });
   }
 
-  async aprobar(user: UserProfile) {
-    console.log('--- INTENTO DE APROBAR ---');
-    console.log('Usuario seleccionado:', user);
-    console.log('UID del usuario:', user.uid);
-
-    if (!user.uid) {
-      console.error('ERROR CRÍTICO: El usuario no tiene UID (Identificador). No se puede actualizar.');
-      alert('Error: Este usuario no tiene ID válido.');
+  aprobar(user: UserProfile) {
+    if (!user.id) {
+      alert('Error: El usuario no tiene un ID válido.');
       return;
     }
 
-    if(confirm(`¿Seguro que quieres aprobar a ${user.email}?`)) {
-      try {
-        console.log('Enviando actualización a Firebase...');
-        await this.userService.approveProgrammer(user.uid);
-        
-        console.log('¡Éxito en Firebase! Recargando lista...');
-        this.loadRequests();
-        alert('¡Usuario ascendido a Programador exitosamente!');
-        this.loadRequests();
-        
-      } catch (error) {
-        console.error('ERROR AL ACTUALIZAR EN FIREBASE:', error);
-        alert('Hubo un error al guardar. Revisa la consola.');
-
-      }
-    } else {
-      console.log('Cancelado por el administrador.');
+    if (confirm(`¿Seguro que quieres ascender a ${user.name || user.email} a Programador?`)) {
+      this.cambiarRol(user, 'PROGRAMMER');
     }
   }
 
-  async cambiarRol(user: UserProfile, nuevoRol: 'admin' | 'programmer' | 'user') {
-    if (user.role === 'admin' && nuevoRol !== 'admin') {
-      if (!confirm(' CUIDADO: Estás a punto de quitarle el rol de Admin a este usuario. ¿Seguro?')) {
+  cambiarRol(user: UserProfile, nuevoRol: string) {
+    if (user.role === 'ADMIN' && nuevoRol !== 'ADMIN') {
+      if (!confirm('CUIDADO: Estás a punto de quitarle el rol de Admin. ¿Seguro?')) {
         return;
       }
     }
 
-    try {
-      await this.userService.updateRole(user.uid, nuevoRol);
-      alert(`Rol actualizado a: ${nuevoRol.toUpperCase()}`);
-      this.loadRequests(); 
-    } catch (error) {
-      console.error(error);
-      alert('Error al actualizar rol');
-    }
+    this.userService.updateRole(user.id, nuevoRol).subscribe({
+      next: () => {
+        alert(`Rol actualizado a: ${nuevoRol}`);
+        this.loadRequests(); 
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Error al actualizar el rol en el servidor.');
+      }
+    });
   }
 
-  async eliminarUsuario(user: UserProfile) {
-    const confirmacion = confirm(` ¿Estás seguro de ELIMINAR a ${user.email}?\n\nEsta acción no se puede deshacer.`);
-    
+  eliminarUsuario(user: UserProfile) {
+    const confirmacion = confirm(`¿Estás seguro de ELIMINAR a ${user.email}?\n\nEsta acción es irreversible.`);
     if (!confirmacion) return;
 
-    try {
-      await this.userService.deleteUser(user.uid);
-      
-      alert(' Usuario eliminado correctamente.');
-      
-      this.loadRequests();
-      
-    } catch (error) {
-      console.error(error);
-      alert('Error al eliminar el usuario.');
-    }
+    this.userService.deleteUser(user.id).subscribe({
+      next: () => {
+        alert('Usuario eliminado correctamente.');
+        this.loadRequests();
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Error al intentar eliminar el usuario.');
+      }
+    });
   }
 }

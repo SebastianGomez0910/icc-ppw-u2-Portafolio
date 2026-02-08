@@ -14,8 +14,9 @@
         
         <select id="programador" [(ngModel)]="selectedProgrammerId" class="select select-bordered select-primary w-full">
           <option value="" disabled selected>-- Elige un programador --</option>
-          @for (prog of programmers; track prog.uid) {
-            <option [value]="prog.uid">{{ prog.displayName || prog.email }}</option>
+  
+          @for (prog of programmers; track prog.id) {
+            <option [value]="prog.id">{{ prog.name || prog.email }}</option>
           }
         </select>
       </div>
@@ -56,9 +57,9 @@
       <div class="card-actions justify-end mt-8">
         <button (click)="createSchedule()" class="btn btn-primary text-white w-full md:w-auto" [disabled]="!selectedProgrammerId || !date || !time">
           @if (endDate) {
-            Crear Intervalo de Horarios 🗓️
+            Crear Intervalo de Horarios 
           } @else {
-            Crear Horario Individual 📅
+            Crear Horario Individual 
           }
         </button>
       </div>

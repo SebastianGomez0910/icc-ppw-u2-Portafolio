@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Project, ProjectService } from '../../../../core/models/project';
 import { UserService } from '../../../../core/services/roles/user-service';
 
+import { forkJoin } from 'rxjs'; 
+
 @Component({
   selector: 'app-public-projects',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './project-public.html',
-  
 })
 export class PublicProjectsComponent implements OnInit {
 
@@ -17,33 +18,33 @@ export class PublicProjectsComponent implements OnInit {
   private cd = inject(ChangeDetectorRef);
 
   projects: Project[] = [];
-  
   authorNames: { [key: string]: string } = {}; 
-  
   isLoading = true;
 
   ngOnInit() {
     this.loadData();
   }
 
-  async loadData() {
-    try {
-      const [allProjects, allUsers] = await Promise.all([
-        this.projectService.getAllProjects(),
-        this.userService.getAllUsers()
-      ]);
+  loadData() {
+    forkJoin({
+      projects: this.projectService.getAllProjects(), 
+      users: this.userService.getProgrammers() 
+    }).subscribe({
+      next: (res) => {
+        this.projects = res.projects;
 
-      this.projects = allProjects;
+        res.users.forEach(user => {
+          this.authorNames[user.id] = user.name || 'Programador';
+        });
 
-      allUsers.forEach(user => {
-        this.authorNames[user.uid] = user.displayName || 'Programador';
-      });
-
-    } catch (error) {
-      console.error('Error cargando proyectos:', error);
-    } finally {
-      this.isLoading = false;
-      this.cd.detectChanges();
-    }
+        this.isLoading = false;
+        this.cd.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error cargando datos públicos:', err);
+        this.isLoading = false;
+        this.cd.detectChanges();
+      }
+    });
   }
 }

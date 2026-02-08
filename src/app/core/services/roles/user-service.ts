@@ -1,120 +1,51 @@
 import { inject, Injectable } from '@angular/core';
-import { User } from '@angular/fire/auth'; 
-import { collection, doc, Firestore, getDoc, getDocs, query, setDoc, updateDoc, where, orderBy, deleteDoc } from '@angular/fire/firestore';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 export interface UserProfile {
-  uid: string;
+  id: string;        
+  name: string;       
   email: string;
-  displayName?: string; 
-  photoURL?: string;
-  role: 'admin' | 'programmer' | 'user'; 
-  requestingProgrammerRole?: boolean;  
-  
-  specialty?: string;      
-  description?: string;    
-  githubUrl?: string;      
-  whatsappUrl?: string;
+  role: string;       
+  password?: string;  
+  photoURL?: string;   
+  githubUrl?: string;
+  specialty?: string;
+  description?: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private firestore = inject(Firestore);
+  
+  private http = inject(HttpClient);
+  
+  // URLs base
+  private apiUrl = 'http://localhost:8080/api/users';
+  private scheduleUrl = 'http://localhost:8080/api/schedules';
 
-  async saveUserProfile(user: User) {
-    const userRef = doc(this.firestore, `users/${user.uid}`);
-    const userSnap = await getDoc(userRef);
-
-    if (!userSnap.exists()) {
-      const newUser: UserProfile = {
-        uid: user.uid,
-        email: user.email || '',
-        displayName: user.displayName || 'Usuario',
-        photoURL: user.photoURL || '',
-        role: 'user', 
-        requestingProgrammerRole: false
-      };
-      return setDoc(userRef, newUser);
-    } else {
-      return updateDoc(userRef, {
-        displayName: user.displayName,
-        photoURL: user.photoURL,
-        email: user.email
-      });
-    }
+  getAllUsers(): Observable<UserProfile[]> {
+    return this.http.get<UserProfile[]>(this.apiUrl);
   }
 
-  requestProgrammerRole(uid: string) {
-    const userRef = doc(this.firestore, `users/${uid}`);
-    return updateDoc(userRef, {
-      requestingProgrammerRole: true 
-    });
+  updateRole(userId: string, newRole: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${userId}/role`, { role: newRole });
   }
 
-  async getPendingRequests(): Promise<UserProfile[]> {
-    const usersRef = collection(this.firestore, 'users');
-    const q = query(usersRef, where('requestingProgrammerRole', '==', true));
-    
-    const querySnapshot = await getDocs(q);
-    const users: UserProfile[] = [];
-    
-    querySnapshot.forEach((doc) => {
-      users.push(doc.data() as UserProfile);
-    });
-    
-    return users;
+  deleteUser(userId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${userId}`);
   }
 
-  approveProgrammer(uid: string) {
-    const userRef = doc(this.firestore, `users/${uid}`);
-    return updateDoc(userRef, {
-      role: 'programmer',              
-      requestingProgrammerRole: false  
-    });
-  }
- 
-  rejectRequest(uid: string) {
-    const userRef = doc(this.firestore, `users/${uid}`);
-    return updateDoc(userRef, {
-      requestingProgrammerRole: false 
-    });
+  getProgrammers(): Observable<UserProfile[]> {
+    return this.http.get<UserProfile[]>(`${this.apiUrl}/programmers`);
   }
 
-  async getUserById(uid: string): Promise<UserProfile | null> {
-    const userRef = doc(this.firestore, `users/${uid}`); 
-    const snap = await getDoc(userRef);
-
-    if (snap.exists()) {
-      return snap.data() as UserProfile;
-    } else {
-      return null;
-    }
+  getUserById(userId: string): Observable<UserProfile> {
+    return this.http.get<UserProfile>(`${this.apiUrl}/${userId}`);
   }
 
-  async getAllUsers(): Promise<UserProfile[]> {
-    const usersRef = collection(this.firestore, 'users');
-    const q = query(usersRef, orderBy('email'));
-    
-    const querySnapshot = await getDocs(q);
-    const users: UserProfile[] = [];
-    
-    querySnapshot.forEach((doc) => {
-      users.push(doc.data() as UserProfile);
-    });
-    return users;
-  }
-
-  updateRole(uid: string, newRole: 'admin' | 'programmer' | 'user') {
-    const userRef = doc(this.firestore, `users/${uid}`);
-    return updateDoc(userRef, {
-      role: newRole,
-      requestingProgrammerRole: false 
-    });
-  }
-
-  deleteUser(uid: string) {
-    const userRef = doc(this.firestore, `users/${uid}`);
-    return deleteDoc(userRef);
+  createSchedule(userId: string, scheduleData: { startTime: string; endTime: string }): Observable<any> {
+    return this.http.post(`${this.scheduleUrl}/${userId}`, scheduleData);
   }
 }

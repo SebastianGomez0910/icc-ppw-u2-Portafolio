@@ -1,6 +1,5 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../../core/services/firebase/auth';
 import { AppointmentService, AppointmentSlot } from '../../../core/models/appointment';
 
 @Component({
@@ -13,82 +12,80 @@ import { AppointmentService, AppointmentSlot } from '../../../core/models/appoin
 export class ProgrammerAppointmentsComponent implements OnInit {
 
   private appointmentService = inject(AppointmentService);
-  public authService = inject(AuthService);
   private cd = inject(ChangeDetectorRef);
   
   appointments: AppointmentSlot[] = [];
   isLoading = true;
 
-  async ngOnInit() {
+  ngOnInit() {
     this.loadAppointments();
   }
 
-  async loadAppointments() {
-    const user = this.authService.currentUser();
-    if (user) {
-      this.appointments = await this.appointmentService.getMyAppointments(user.uid);
-      this.isLoading = false;
-      this.cd.detectChanges();
-    }
+  loadAppointments() {
+    this.isLoading = true;
+    this.appointmentService.getProgrammerAppointments().subscribe({
+      next: (data) => {
+        this.appointments = data;
+        this.isLoading = false;
+        this.cd.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error cargando citas:', err);
+        this.isLoading = false;
+        this.cd.detectChanges();
+      }
+    });
   }
+
   enviarWhatsApp(cita: AppointmentSlot) {
-    alert(` SIMULACIÓN: Notificación por WhatsApp enviada correctamente a ${cita.clientName}.`);
+    alert(`SIMULACIÓN: WhatsApp enviado a ${cita.clientName || 'el cliente'}.`);
   }
 
   enviarCorreo(cita: AppointmentSlot) {
-    alert(` SIMULACIÓN: Correo electrónico enviado a ${cita.clientEmail || 'el cliente'}.`);
+    alert(`SIMULACIÓN: Correo enviado a ${cita.clientName || 'el cliente'}.`);
   }
 
-
-  async aceptarCita(slot: AppointmentSlot) {
-    let mensajeInput = prompt('Mensaje de confirmación (Opcional):');
+  aceptarCita(slot: AppointmentSlot) {
+    const mensajeInput = prompt('Mensaje de confirmación para el cliente (Opcional):');
     if (mensajeInput === null) return;
 
     const mensajeFinal = mensajeInput.trim() || '¡Nos vemos pronto!';
 
-    try {
-      await this.appointmentService.confirmAppointment(slot.id!, mensajeFinal);
-      
-      if(confirm(' Cita confirmada en el sistema.  envío de notificación por WhatsApp?')) {
-          this.enviarWhatsApp(slot);
-      } 
-      
-      if (confirm(' también envío por Correo?')) {
-          this.enviarCorreo(slot);
+    this.appointmentService.confirmAppointment(slot.id, mensajeFinal).subscribe({
+      next: () => {
+        alert('Cita confirmada en el sistema.');
+        
+        if(confirm('¿Deseas simular el envío de WhatsApp?')) this.enviarWhatsApp(slot);
+        if(confirm('¿Deseas simular el envío de Correo?')) this.enviarCorreo(slot);
+        
+        this.loadAppointments(); 
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Error al confirmar la cita en el servidor.');
       }
-      
-      this.loadAppointments();
-
-    } catch (error) {
-      console.error(error);
-      alert('Error al confirmar la cita.');
-    }
+    });
   }
 
-  async rechazarCita(slot: AppointmentSlot) {
-    const motivo = prompt('Motivo del rechazo:');
-    if (motivo === null) return;
-    if (motivo.trim() === '') {
-        alert('Debes escribir un motivo.');
+  rechazarCita(slot: AppointmentSlot) {
+    const motivo = prompt('Motivo del rechazo (obligatorio):');
+    if (motivo === null || motivo.trim() === '') {
+        alert('Debes escribir un motivo para rechazar.');
         return;
     }
     
-    try {
-      await this.appointmentService.rejectAppointment(slot.id!, motivo);
+    this.appointmentService.rejectAppointment(slot.id, motivo).subscribe({
+      next: () => {
+        alert('Cita rechazada correctamente.');
 
-      if(confirm(' Cita rechazada. ¿Simular aviso por WhatsApp?')) {
-          this.enviarWhatsApp(slot);
-      } 
-      
-      if (confirm('¿Simular aviso por Correo?')) {
-          this.enviarCorreo(slot);
+        if(confirm('¿Simular aviso por WhatsApp al cliente?')) this.enviarWhatsApp(slot);
+        
+        this.loadAppointments(); 
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Error al rechazar la cita.');
       }
-      
-      this.loadAppointments();
-
-    } catch (error) {
-      console.error(error);
-      alert('Error al rechazar la cita.');
-    }
+    });
   }
 }

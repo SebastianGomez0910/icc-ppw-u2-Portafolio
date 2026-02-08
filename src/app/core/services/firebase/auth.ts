@@ -1,60 +1,62 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { 
-  Auth, 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signOut, 
-  user, 
-  User, 
-  GoogleAuthProvider, 
-  signInWithPopup 
-} from '@angular/fire/auth';
-import { Observable, from } from 'rxjs';
-import { UserService } from '../roles/user-service';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   
-  private auth: Auth = inject(Auth);
-  private UserService=inject(UserService);
+  private http = inject(HttpClient);
+  private router = inject(Router);
   
-  currentUser = signal<User | null>(null);
-  
-  user$ = user(this.auth);
+  private apiUrl = 'http://localhost:8080/api/auth';
+
+  currentUser = signal<any | null>(null);
 
   constructor() {
-    this.user$.subscribe(async (user) => {
-      this.currentUser.set(user);
-      if (user) {
-        await this.UserService.saveUserProfile(user);
-      }
-    });
+    this.checkLocalStorage();
   }
 
-  register(email: string, password: string): Observable<any> {
-    const promise = createUserWithEmailAndPassword(this.auth, email, password);
-    return from(promise); 
+  register(userData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, userData);
   }
 
-  login(email: string, password: string): Observable<any> {
-    const promise = signInWithEmailAndPassword(this.auth, email, password);
-    return from(promise);
+  login(credentials: { email: string; password: string }): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
+      tap(res => {
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('user', JSON.stringify(res.user));
+        
+        this.currentUser.set(res.user);
+      })
+    );
   }
 
-  loginWithGoogle(): Observable<any> {
-    const provider = new GoogleAuthProvider();
-    const promise = signInWithPopup(this.auth, provider);
-    return from(promise);
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.currentUser.set(null);
+    this.router.navigate(['/login']);
   }
 
-  logout(): Observable<void> {
-    const promise = signOut(this.auth);
-    return from(promise);
+  private checkLocalStorage() {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      this.currentUser.set(JSON.parse(savedUser));
+    }
   }
 
   isAuthenticated(): boolean {
-    return this.currentUser() !== null;
+    return !!localStorage.getItem('token');
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  isAdmin(): boolean {
+    return this.currentUser()?.role === 'ADMIN';
   }
 }

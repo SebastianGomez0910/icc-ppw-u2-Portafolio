@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Firestore, collection, doc, writeBatch } from '@angular/fire/firestore';
 import { UserProfile, UserService } from '../../../core/services/roles/user-service';
 
 @Component({
@@ -9,107 +8,83 @@ import { UserProfile, UserService } from '../../../core/services/roles/user-serv
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './admin-dashboard.html', 
-  styleUrl: './admin-dashboard.css'
+  styleUrls: ['./admin-dashboard.css']
 })
 export class AdminScheduleComponent implements OnInit {
 
-  private firestore = inject(Firestore); 
   private userService = inject(UserService);
   private cd = inject(ChangeDetectorRef);
 
-  programmers: UserProfile[] = []; 
+  programmers: UserProfile[] = [];
   
   selectedProgrammerId: string = '';
   date: string = '';      
+  time: string = '';    
   endDate: string = '';   
-  time: string = '';
-
+  
+  durationHours: number = 1; 
   isLoading = true;
 
   ngOnInit() {
     this.loadProgrammers();
   }
 
-  async loadProgrammers() {
-    try {
-      const allUsers = await this.userService.getAllUsers();
-      this.programmers = allUsers.filter(u => u.role === 'programmer');
-    } catch (error) {
-      console.error('Error cargando usuarios', error);
-    } finally {
-      this.isLoading = false;
-      this.cd.detectChanges();
-    }
+  loadProgrammers() {
+    this.userService.getProgrammers().subscribe({
+      next: (users) => {
+        this.programmers = users;
+        this.isLoading = false;
+        this.cd.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error cargando programadores', err);
+        this.isLoading = false;
+      }
+    });
   }
 
-  async createSchedule() {
+  createSchedule() {
     if (!this.selectedProgrammerId || !this.date || !this.time) {
-      alert(' Por favor selecciona: Programador, Fecha de inicio y Hora.');
+      alert('Por favor completa todos los campos.');
       return;
     }
 
     this.isLoading = true;
 
-    try {
-      const prog = this.programmers.find(p => p.uid === this.selectedProgrammerId);
-      const programmerName = prog?.displayName || prog?.email || 'Programador';
+    const [hours, minutes] = this.time.split(':').map(Number);
+    
+    const tempDate = new Date();
+    tempDate.setHours(hours);
+    tempDate.setMinutes(minutes);
+    tempDate.setHours(tempDate.getHours() + this.durationHours); 
 
-      const batch = writeBatch(this.firestore);
-      const slotsCollection = collection(this.firestore, 'appointments');
+    const startString = `${this.time}:00`; 
+    
+    const endHoursStr = tempDate.getHours().toString().padStart(2, '0');
+    const endMinutesStr = tempDate.getMinutes().toString().padStart(2, '0');
+    const endString = `${endHoursStr}:${endMinutesStr}:00`;
 
-      let currentDate = new Date(this.date + 'T00:00:00');
-      
-      let finalDate = this.endDate 
-        ? new Date(this.endDate + 'T00:00:00') 
-        : new Date(this.date + 'T00:00:00');
+    const scheduleData = {
+      date: this.date,       
+      startTime: startString, 
+      endTime: endString      
+    };
 
-      if (finalDate < currentDate) {
-        alert(' Error: La fecha "Hasta" no puede ser anterior a la fecha "Desde".');
+    console.log('Enviando al backend:', scheduleData); 
+
+    this.userService.createSchedule(this.selectedProgrammerId, scheduleData).subscribe({
+      next: (res) => {
+        alert('¡Horario asignado con éxito!');
         this.isLoading = false;
-        return;
+        this.time = ''; 
+        this.cd.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Error al crear el horario. Revisa la consola.');
+        this.isLoading = false;
+        this.cd.detectChanges();
       }
-
-      let count = 0; 
-
-      while (currentDate <= finalDate) {
-        
-        const dateString = currentDate.toISOString().split('T')[0];
-        
-        const newDocRef = doc(slotsCollection);
-
-        const data = {
-        id: newDocRef.id,
-        programmerId: this.selectedProgrammerId,
-        programmerName: programmerName,
-        date: dateString,
-        time: this.time,
-        isBooked: false,        
-        status: 'available',    
-        clientName: null,       
-        topic: null,            
-        createdAt: new Date()
-        };
-
-        batch.set(newDocRef, data);
-
-        currentDate.setDate(currentDate.getDate() + 1);
-        count++;
-      }
-
-      await batch.commit();
-
-      alert(` ¡Listo! Se crearon ${count} horarios correctamente.`);
-      
-      this.date = '';
-      this.endDate = '';
-      this.time = ''; 
-      
-    } catch (error) {
-      console.error(error);
-      alert(' Ocurrió un error al crear los horarios.');
-    } finally {
-      this.isLoading = false;
-      this.cd.detectChanges();
-    }
+    });
   }
 }
