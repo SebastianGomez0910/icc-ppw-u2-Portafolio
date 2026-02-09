@@ -52,4 +52,14 @@ export class AuthService {
     }
     return null;
   }
+
+  currentUser() {
+    const userData = localStorage.getItem('user');
+    if (!userData) return null;
+
+    const user = JSON.parse(userData);
+    console.log("Usuario en localStorage:", user);
+    return user;
+  }
+
 }

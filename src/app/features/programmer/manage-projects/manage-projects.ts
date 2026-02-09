@@ -1,9 +1,9 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Project, ProjectService } from '../../../core/models/project';
-import { AuthService } from '../../../core/services/firebase/auth';
+import { Project, ProjectService } from '../../../core/models/project'; 
 import { ValidationService } from '../../../shared/services/validation.service';
+import { AuthService } from '../../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-programmer-projects',
@@ -19,123 +19,106 @@ export class ProgrammerProjectsComponent implements OnInit {
   private cd = inject(ChangeDetectorRef);
 
   projects: Project[] = [];
-
   showMessage = false;
   messageText = '';
 
   newProject: Project = {
-    programmerId: '',
-    authorName: '',
-    name: '',
+    title: '',
     description: '',
     projectType: 'Académico',
-    role: '',
+    participation: '', 
     technologies: '',
-    repoUrl: '',
-    demoUrl: ''
+    repositoryUrl: '', 
+    demoUrl: '',
+    imageUrl: 'https://via.placeholder.com/300'
   };
 
-  currentUser = this.authService.currentUser();
+  currentUser = this.authService.currentUser(); 
 
   ngOnInit() {
-    if (this.currentUser) {
-      this.newProject.programmerId = this.currentUser.uid;
-      this.newProject.authorName = (this.currentUser.displayName || this.currentUser.email || '').trim();
-      this.loadProjects();
-    }
+  if (this.currentUser) {
+    this.newProject.programmerName = this.currentUser.email;
+    this.loadProjects();
   }
+}
 
-  async loadProjects() {
-    if (this.currentUser) {
-      this.projects = await this.projectService.getMyProjects(this.currentUser.uid);
-      this.cd.detectChanges();
-    }
+  loadProjects() {
+    this.projectService.getMyProjects().subscribe({
+      next: (res: any) => {
+        this.projects = res.content || res; 
+        this.cd.detectChanges();
+      },
+      error: (err) => console.error('Error cargando proyectos', err)
+    });
   }
 
   showCenteredMessage(text: string) {
     this.messageText = text;
     this.showMessage = true;
-    setTimeout(() => {
-      this.showMessage = false;
-    }, 2500);
+    setTimeout(() => this.showMessage = false, 2500);
   }
 
   validateForm(): string | null {
-
-    const author = this.newProject.authorName?.trim();
-
-    if (!author)
-      return 'El nombre del autor es obligatorio.';
-
-    if (author.includes('@'))
-      return 'El nombre del autor no puede ser un correo.';
-
-    if (!ValidationService.onlyLettersValue(author))
-      return 'El nombre del autor solo debe contener letras.';
-
-    if (!this.newProject.name.trim())
+    if (!this.newProject.title.trim())
       return 'El nombre del proyecto es obligatorio.';
-
-    
 
     if (!this.newProject.description.trim())
       return 'La descripción es obligatoria.';
 
-    if (!this.newProject.role.trim())
-      return 'El rol es obligatorio.';
-
+    if (!this.newProject.participation.trim())
+      return 'La participación/rol es obligatorio.';
 
     if (!this.newProject.technologies.trim())
-      return 'Las tecnologías utilizadas son obligatorias.';
+      return 'Las tecnologías son obligatorias.';
 
-    if (this.newProject.repoUrl &&
-        !ValidationService.urlValidatorValue(this.newProject.repoUrl))
-      return 'El enlace del repositorio debe comenzar con http:// o https://';
+    if (this.newProject.repositoryUrl && !ValidationService.urlValidatorValue(this.newProject.repositoryUrl))
+      return 'El enlace del repositorio no es válido.';
 
-    if (this.newProject.demoUrl &&
-        !ValidationService.urlValidatorValue(this.newProject.demoUrl))
-      return 'El enlace de la demo debe comenzar con http:// o https://';
+    if (this.newProject.demoUrl && !ValidationService.urlValidatorValue(this.newProject.demoUrl))
+      return 'El enlace de la demo no es válido.';
 
     return null;
   }
 
-  async add() {
+  add() {
     const error = this.validateForm();
-
     if (error) {
       this.showCenteredMessage(error);
       return;
     }
 
-    try {
-      await this.projectService.addProject(this.newProject);
-
-      this.showCenteredMessage(' Proyecto añadido exitosamente');
-
-      this.newProject = {
-        programmerId: this.currentUser?.uid || '',
-        authorName: this.currentUser?.displayName?.trim() || '',
-        name: '',
-        description: '',
-        projectType: '',
-        role: '',
-        technologies: '',
-        repoUrl: '',
-        demoUrl: ''
-      };
-
-      await this.loadProjects();
-
-    } catch (err) {
-      console.error(err);
-      this.showCenteredMessage(' Error al publicar el proyecto.');
-    }
+    this.projectService.addProject(this.newProject).subscribe({
+      next: () => {
+        this.showCenteredMessage('Proyecto añadido exitosamente 🎉');
+        this.resetForm();
+        this.loadProjects();
+      },
+      error: (err) => {
+        console.error(err);
+        this.showCenteredMessage('Error al publicar el proyecto.');
+      }
+    });
   }
 
-  async delete(id: string) {
-    if (confirm('¿Borrar este proyecto?')) {
-      await this.projectService.deleteProject(id);
-      await this.loadProjects();
+  resetForm() {
+    this.newProject = {
+      title: '',
+      description: '',
+      projectType: 'Académico',
+      participation: '',
+      technologies: '',
+      repositoryUrl: '',
+      demoUrl: '',
+      imageUrl: 'https://via.placeholder.com/300'
+    };
+  }
+
+  delete(id: string | undefined) {
+    if (id && confirm('¿Borrar este proyecto?')) {
+      this.projectService.deleteProject(id).subscribe({
+        next: () => this.loadProjects(),
+        error: (err) => console.error('Error al eliminar', err)
+      });
     }
   }
 }

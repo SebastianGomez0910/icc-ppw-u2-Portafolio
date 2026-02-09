@@ -1,47 +1,45 @@
 import { inject, Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, query, where, getDocs, deleteDoc, doc } from '@angular/fire/firestore';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 export interface Project {
   id?: string;
-  programmerId: string;
-  authorName?: string;
-  name: string;                
+  title: string;         
+  projectType: string;   
   description: string;
-  projectType: 'Académico' | 'Profesional' | ''; 
-  role: string;                
-  technologies: string;        
-  repoUrl?: string;            
-  demoUrl?: string;            
+  participation: string; 
+  technologies: string;
+  repositoryUrl?: string; 
+  demoUrl?: string;
+  imageUrl?: string;     
+  programmerName?: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectService {
-  private firestore = inject(Firestore);
-
-  addProject(project: Project) {
-    const ref = collection(this.firestore, 'projects');
-    return addDoc(ref, project);
-  }
-
-  async getMyProjects(uid: string) {
-    const ref = collection(this.firestore, 'projects');
-    const q = query(ref, where('programmerId', '==', uid));
-    const snap = await getDocs(q);
-    return snap.docs.map(doc => ({id: doc.id, ...doc.data() as any}));
-  }
-
-  deleteProject(id: string) {
-    const ref = doc(this.firestore, `projects/${id}`);
-    return deleteDoc(ref);
-  }
-
-  async getAllProjects() {
-    const ref = collection(this.firestore, 'projects');
-    const snap = await getDocs(ref);
-    return snap.docs.map(doc => ({id: doc.id, ...doc.data() as any}));
-  }
-
+  private http = inject(HttpClient);
   
+  private apiUrl = 'http://localhost:8080/api/projects';
+
+  addProject(project: Project): Observable<Project> {
+    return this.http.post<Project>(this.apiUrl, project);
+  }
+
+  getMyProjects(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/my-projects`);
+  }
+
+  deleteProject(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  getPublicProjects(userId: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/public/${userId}`);
+  }
+
+  getAllProjects(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/all`); 
+  }
 }
