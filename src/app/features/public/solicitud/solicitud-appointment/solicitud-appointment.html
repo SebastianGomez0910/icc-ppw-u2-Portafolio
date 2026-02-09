@@ -126,7 +126,7 @@
                   
                   <div class="badge badge-secondary badge-outline mb-2">{{ slot.date }}</div>
                   
-                  <h3 class="text-3xl font-black text-base-content">{{ slot.time }}</h3>
+                  <h3 class="text-3xl font-black text-base-content">{{ slot.startTime }}</h3>
                   
                   <div class="mt-4 w-full">
                       @if (isLoggedIn) {
@@ -134,7 +134,8 @@
                             (click)="book(slot)" 
                             [disabled]="!bookingTopic"
                             class="btn btn-primary btn-sm w-full text-white"
-                            attr.aria-label="Reservar cita para el {{slot.date}} a las {{slot.time}}">
+                            
+                            attr.aria-label="Reservar cita para el {{slot.date}} a las {{slot.startTime}}">
                             Reservar Cita
                           </button>
                        } @else {

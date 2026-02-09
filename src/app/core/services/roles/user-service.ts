@@ -21,7 +21,6 @@ export class UserService {
   
   private http = inject(HttpClient);
   
-  // URLs base
   private apiUrl = 'http://localhost:8080/api/users';
   private scheduleUrl = 'http://localhost:8080/api/schedules';
 

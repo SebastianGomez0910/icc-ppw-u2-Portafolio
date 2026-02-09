@@ -8,14 +8,14 @@ import { AppointmentService, AppointmentSlot } from '../../../core/models/appoin
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './my-appointments.html',
-  styleUrl: './my-appointments.css',
+  styleUrl: './my-appointments.css', 
 })
 export class MyAppointments implements OnInit {
   
   private appointmentService = inject(AppointmentService);
   private cd = inject(ChangeDetectorRef);
 
-  myAppointments: AppointmentSlot[] = [];
+  myAppointments: any[] = [];
   isLoading = true;
 
   ngOnInit() {
@@ -23,8 +23,9 @@ export class MyAppointments implements OnInit {
   }
 
   loadMyAppointments() {
-    this.appointmentService.getClientAppointments().subscribe({
+    this.appointmentService.getMyAppointments().subscribe({
       next: (appointments) => {
+        console.log("Citas recibidas de Java:", appointments); 
         this.myAppointments = appointments;
         this.isLoading = false;
         this.cd.detectChanges();

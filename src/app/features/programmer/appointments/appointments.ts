@@ -14,7 +14,7 @@ export class ProgrammerAppointmentsComponent implements OnInit {
   private appointmentService = inject(AppointmentService);
   private cd = inject(ChangeDetectorRef);
   
-  appointments: AppointmentSlot[] = [];
+  appointments: any[] = [];
   isLoading = true;
 
   ngOnInit() {

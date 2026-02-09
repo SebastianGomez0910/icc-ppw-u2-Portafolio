@@ -32,9 +32,11 @@
             <header class="flex flex-col sm:flex-row justify-between items-start gap-3">
               <div class="w-full">
                 <h2 class="card-title text-xl md:text-2xl font-black">
-                  {{ cita.date }} <span class="text-base font-normal text-gray-500">| {{ cita.time }}</span>
+                  {{ cita.schedule?.date }} <span class="text-base font-normal text-gray-500">| {{ cita.schedule?.startTime }}</span>
                 </h2>
-                <p class="font-bold mt-1 text-primary text-lg">{{ cita.clientName || 'Cliente Registrado' }}</p>
+                <p class="font-bold mt-1 text-primary text-lg">
+                    {{ cita.client?.name || cita.client?.email || 'Cliente Registrado' }}
+                </p>
               </div>
 
               @if (!cita.status || cita.status === 'PENDING') {
@@ -59,7 +61,7 @@
 
             @if (cita.status === 'REJECTED') {
               <div class="alert alert-error shadow-sm text-white p-2 text-sm" role="alert">
-                <span class="font-bold">Motivo del rechazo:</span> {{ cita.rejectionReason }}
+                <span class="font-bold">Motivo del rechazo:</span> {{ cita.rejectionReason || 'No especificado' }}
               </div>
             }
 

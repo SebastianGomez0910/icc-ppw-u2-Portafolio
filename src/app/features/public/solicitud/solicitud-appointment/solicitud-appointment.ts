@@ -80,7 +80,7 @@ export class RequestAppointmentComponent implements OnInit {
     }
 
     if (this.filterTime) {
-      result = result.filter(slot => slot.time.toString().includes(this.filterTime));
+      result = result.filter(slot => slot.startTime.toString().includes(this.filterTime));
     }
 
     this.filteredSlots = result;
@@ -93,7 +93,7 @@ export class RequestAppointmentComponent implements OnInit {
         return;
     }
 
-    const mensaje = `¿Confirmar cita?\n\nFecha: ${slot.date}\nHora: ${slot.time}`;
+    const mensaje = `¿Confirmar cita?\n\nFecha: ${slot.date}\nHora: ${slot.startTime}`;
     if (confirm(mensaje)) {
         
         this.appointmentService.bookSlot(slot.id, this.bookingTopic).subscribe({
