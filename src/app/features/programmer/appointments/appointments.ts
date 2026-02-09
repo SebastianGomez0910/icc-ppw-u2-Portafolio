@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AppointmentService, AppointmentSlot } from '../../../core/models/appointment';
+import { AppointmentService } from '../../../core/models/appointment';
 
 @Component({
   selector: 'app-programmer-appointments',
@@ -23,9 +23,11 @@ export class ProgrammerAppointmentsComponent implements OnInit {
 
   loadAppointments() {
     this.isLoading = true;
-    this.appointmentService.getProgrammerAppointments().subscribe({
+    
+    this.appointmentService.getIncomingAppointments().subscribe({
       next: (data) => {
         this.appointments = data;
+        console.log('Citas cargadas:', data); 
         this.isLoading = false;
         this.cd.detectChanges();
       },
@@ -37,48 +39,48 @@ export class ProgrammerAppointmentsComponent implements OnInit {
     });
   }
 
-  enviarWhatsApp(cita: AppointmentSlot) {
-    alert(`SIMULACIÓN: WhatsApp enviado a ${cita.clientName || 'el cliente'}.`);
+  enviarWhatsApp(cita: any) {
+    const nombreCliente = cita.client ? cita.client.name : 'el cliente';
+    alert(`SIMULACIÓN: WhatsApp enviado a ${nombreCliente}.`);
   }
 
-  enviarCorreo(cita: AppointmentSlot) {
-    alert(`SIMULACIÓN: Correo enviado a ${cita.clientName || 'el cliente'}.`);
+  enviarCorreo(cita: any) {
+    const nombreCliente = cita.client ? cita.client.name : 'el cliente';
+    alert(`SIMULACIÓN: Correo enviado a ${nombreCliente}.`);
   }
 
-  aceptarCita(slot: AppointmentSlot) {
+  aceptarCita(cita: any) {
     const mensajeInput = prompt('Mensaje de confirmación para el cliente (Opcional):');
-    if (mensajeInput === null) return;
+    if (mensajeInput === null) return; 
 
-    const mensajeFinal = mensajeInput.trim() || '¡Nos vemos pronto!';
-
-    this.appointmentService.confirmAppointment(slot.id, mensajeFinal).subscribe({
+    this.appointmentService.updateStatus(cita.id, 'ACCEPTED').subscribe({
       next: () => {
-        alert('Cita confirmada en el sistema.');
+        alert(' Cita aceptada en el sistema.');
         
-        if(confirm('¿Deseas simular el envío de WhatsApp?')) this.enviarWhatsApp(slot);
-        if(confirm('¿Deseas simular el envío de Correo?')) this.enviarCorreo(slot);
+        if(confirm('¿Deseas simular el envío de WhatsApp?')) this.enviarWhatsApp(cita);
+        if(confirm('¿Deseas simular el envío de Correo?')) this.enviarCorreo(cita);
         
-        this.loadAppointments(); 
+        this.loadAppointments();
       },
       error: (err) => {
         console.error(err);
-        alert('Error al confirmar la cita en el servidor.');
+        alert('rror al aceptar la cita.');
       }
     });
   }
 
-  rechazarCita(slot: AppointmentSlot) {
-    const motivo = prompt('Motivo del rechazo (obligatorio):');
+  rechazarCita(cita: any) {
+    const motivo = prompt('Motivo del rechazo (para simulación de WhatsApp):');
     if (motivo === null || motivo.trim() === '') {
         alert('Debes escribir un motivo para rechazar.');
         return;
     }
     
-    this.appointmentService.rejectAppointment(slot.id, motivo).subscribe({
+    this.appointmentService.updateStatus(cita.id, 'REJECTED').subscribe({
       next: () => {
-        alert('Cita rechazada correctamente.');
+        alert('Cita rechazada y horario liberado.');
 
-        if(confirm('¿Simular aviso por WhatsApp al cliente?')) this.enviarWhatsApp(slot);
+        if(confirm('¿Simular aviso por WhatsApp al cliente con el motivo?')) this.enviarWhatsApp(cita);
         
         this.loadAppointments(); 
       },

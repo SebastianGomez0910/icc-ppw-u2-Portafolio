@@ -1,9 +1,10 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Project, ProjectService } from '../../../core/models/project'; 
-import { ValidationService } from '../../../shared/services/validation.service';
 import { AuthService } from '../../../core/services/auth/auth.service';
+import { ValidationService } from '../../../shared/services/validation.service';
+import { CreateProjectDto, ProjectResponse, ProjectService } from '../../../core/models/project';
+
 
 @Component({
   selector: 'app-programmer-projects',
@@ -18,11 +19,12 @@ export class ProgrammerProjectsComponent implements OnInit {
   private authService = inject(AuthService);
   private cd = inject(ChangeDetectorRef);
 
-  projects: Project[] = [];
+  projects: ProjectResponse[] = [];
+  
   showMessage = false;
   messageText = '';
 
-  newProject: Project = {
+  newProject: CreateProjectDto = {
     title: '',
     description: '',
     projectType: 'Académico',
@@ -30,52 +32,39 @@ export class ProgrammerProjectsComponent implements OnInit {
     technologies: '',
     repositoryUrl: '', 
     demoUrl: '',
-    imageUrl: 'https://via.placeholder.com/300'
+    imageUrl: '' 
   };
 
   currentUser = this.authService.currentUser(); 
 
   ngOnInit() {
-  if (this.currentUser) {
-    this.newProject.programmerName = this.currentUser.email;
     this.loadProjects();
   }
-}
 
   loadProjects() {
     this.projectService.getMyProjects().subscribe({
       next: (res: any) => {
+  
         this.projects = res.content || res; 
+        console.log("Proyectos cargados:", this.projects);
         this.cd.detectChanges();
       },
       error: (err) => console.error('Error cargando proyectos', err)
     });
   }
 
-  showCenteredMessage(text: string) {
-    this.messageText = text;
-    this.showMessage = true;
-    setTimeout(() => this.showMessage = false, 2500);
-  }
-
   validateForm(): string | null {
-    if (!this.newProject.title.trim())
-      return 'El nombre del proyecto es obligatorio.';
-
-    if (!this.newProject.description.trim())
-      return 'La descripción es obligatoria.';
-
-    if (!this.newProject.participation.trim())
-      return 'La participación/rol es obligatorio.';
-
-    if (!this.newProject.technologies.trim())
-      return 'Las tecnologías son obligatorias.';
-
+    if (!this.newProject.title.trim()) return 'El nombre del proyecto es obligatorio.';
+    if (!this.newProject.description.trim()) return 'La descripción es obligatoria.';
+    if (!this.newProject.participation.trim()) return 'La participación/rol es obligatorio.';
+    if (!this.newProject.technologies.trim()) return 'Las tecnologías son obligatorias.';
+    
     if (this.newProject.repositoryUrl && !ValidationService.urlValidatorValue(this.newProject.repositoryUrl))
       return 'El enlace del repositorio no es válido.';
-
     if (this.newProject.demoUrl && !ValidationService.urlValidatorValue(this.newProject.demoUrl))
       return 'El enlace de la demo no es válido.';
+    if (this.newProject.imageUrl && !ValidationService.urlValidatorValue(this.newProject.imageUrl))
+      return 'El enlace de la imagen no es válido.';
 
     return null;
   }
@@ -87,17 +76,29 @@ export class ProgrammerProjectsComponent implements OnInit {
       return;
     }
 
-    this.projectService.addProject(this.newProject).subscribe({
+    this.projectService.createProject(this.newProject).subscribe({
       next: () => {
-        this.showCenteredMessage('Proyecto añadido exitosamente 🎉');
+        this.showCenteredMessage(' Proyecto publicado exitosamente');
         this.resetForm();
-        this.loadProjects();
+        this.loadProjects(); 
       },
       error: (err) => {
         console.error(err);
-        this.showCenteredMessage('Error al publicar el proyecto.');
+        this.showCenteredMessage(' Error al publicar en el servidor.');
       }
     });
+  }
+
+  delete(id: string | undefined) {
+    if (id && confirm('¿Estás seguro de borrar este proyecto permanentemente?')) {
+      this.projectService.deleteProject(id).subscribe({
+        next: () => {
+          this.showCenteredMessage(' Proyecto eliminado');
+          this.loadProjects();
+        },
+        error: (err) => console.error('Error al eliminar', err)
+      });
+    }
   }
 
   resetForm() {
@@ -109,16 +110,13 @@ export class ProgrammerProjectsComponent implements OnInit {
       technologies: '',
       repositoryUrl: '',
       demoUrl: '',
-      imageUrl: 'https://via.placeholder.com/300'
+      imageUrl: ''
     };
   }
 
-  delete(id: string | undefined) {
-    if (id && confirm('¿Borrar este proyecto?')) {
-      this.projectService.deleteProject(id).subscribe({
-        next: () => this.loadProjects(),
-        error: (err) => console.error('Error al eliminar', err)
-      });
-    }
+  showCenteredMessage(text: string) {
+    this.messageText = text;
+    this.showMessage = true;
+    setTimeout(() => this.showMessage = false, 3000);
   }
 }

@@ -1,13 +1,13 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { AppointmentService, AppointmentSlot } from '../../../core/models/appointment';
+import { AppointmentService } from '../../../core/models/appointment';
 
 @Component({
   selector: 'app-my-appointments',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './my-appointments.html',
+  templateUrl: './my-appointments.html', 
   styleUrl: './my-appointments.css', 
 })
 export class MyAppointments implements OnInit {
@@ -23,6 +23,7 @@ export class MyAppointments implements OnInit {
   }
 
   loadMyAppointments() {
+    this.isLoading = true;
     this.appointmentService.getMyAppointments().subscribe({
       next: (appointments) => {
         console.log("Citas recibidas de Java:", appointments); 
@@ -41,18 +42,18 @@ export class MyAppointments implements OnInit {
   getStatusClass(status: string | undefined): string {
     const s = status?.toUpperCase();
     switch (s) {
-      case 'CONFIRMED': return 'badge-success text-white';
-      case 'REJECTED':  return 'badge-error text-white';    
-      default:          return 'badge-warning';                      
+      case 'ACCEPTED': return 'badge-success text-white'; 
+      case 'REJECTED': return 'badge-error text-white';    
+      default:         return 'badge-warning';                      
     }
   }
 
   translateStatus(status: string | undefined): string {
     const s = status?.toUpperCase();
     switch (s) {
-      case 'CONFIRMED': return 'Aceptada';
-      case 'REJECTED':  return 'Rechazada';
-      default:          return 'Pendiente';
+      case 'ACCEPTED': return 'Aceptada'; 
+      case 'REJECTED': return 'Rechazada';
+      default:         return 'Pendiente';
     }
   }
 }

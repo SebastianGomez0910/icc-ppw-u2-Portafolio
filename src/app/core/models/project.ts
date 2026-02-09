@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Project {
@@ -15,6 +15,9 @@ export interface Project {
   programmerName?: string;
 }
 
+export type ProjectResponse = Project;       
+export type CreateProjectDto = Omit<Project, 'id'>; 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,16 +26,26 @@ export class ProjectService {
   
   private apiUrl = 'http://localhost:8080/api/projects';
 
-  addProject(project: Project): Observable<Project> {
-    return this.http.post<Project>(this.apiUrl, project);
+  private getHeaders() {
+    const token = localStorage.getItem('token'); 
+    return {
+      headers: new HttpHeaders({ 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      })
+    };
+  }
+
+  createProject(project: CreateProjectDto): Observable<Project> {
+    return this.http.post<Project>(this.apiUrl, project, this.getHeaders());
   }
 
   getMyProjects(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/my-projects`);
+    return this.http.get<any>(`${this.apiUrl}/my-projects`, this.getHeaders());
   }
 
   deleteProject(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, this.getHeaders());
   }
 
   getPublicProjects(userId: string): Observable<any> {

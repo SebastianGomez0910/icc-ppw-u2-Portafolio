@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -22,9 +22,12 @@ export class AppointmentService {
   private apiUrl = 'http://localhost:8080/api'; 
 
   private getHeaders() {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token'); 
     return {
-      headers: new HttpHeaders({ 'Authorization': `Bearer ${token}` })
+      headers: new HttpHeaders({ 
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json' 
+      })
     };
   }
 
@@ -40,15 +43,11 @@ export class AppointmentService {
     return this.http.get<any[]>(`${this.apiUrl}/appointments/my-appointments`, this.getHeaders());
   }
 
-  getProgrammerAppointments(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/appointments/programmer`, this.getHeaders());
+  getIncomingAppointments(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/appointments/incoming`, this.getHeaders());
   }
 
-  confirmAppointment(appointmentId: string, message: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/appointments/${appointmentId}/confirm`, { message }, this.getHeaders());
-  }
-
-  rejectAppointment(appointmentId: string, reason: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/appointments/${appointmentId}/reject`, { reason }, this.getHeaders());
+  updateStatus(appointmentId: string, status: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/appointments/${appointmentId}/status`, { status }, this.getHeaders());
   }
 }
