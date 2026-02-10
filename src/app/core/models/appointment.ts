@@ -51,4 +51,10 @@ export class AppointmentService {
   updateStatus(appointmentId: string, status: string): Observable<any> {
     return this.http.put(`${this.apiUrl}/appointments/${appointmentId}/status`, { status }, this.getHeaders());
   }
+  getAppointmentSummary() {
+  return this.http.get<any>(
+    `${environment.apiUrl}/appointments/summary`
+  );
+}
+
 }

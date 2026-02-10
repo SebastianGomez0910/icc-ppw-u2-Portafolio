@@ -32,7 +32,6 @@ export class ProgrammerDashboardComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res) => {
           this.resumen = { ...res };
-          
           setTimeout(() => this.renderCharts(), 50);
         },
         error: (err) => console.error("Error cargando resumen de dashboard:", err)
