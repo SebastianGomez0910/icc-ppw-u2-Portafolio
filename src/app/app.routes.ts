@@ -9,6 +9,8 @@ import { ProgrammerProjectsComponent } from './features/programmer/manage-projec
 import { RequestAppointmentComponent } from './features/public/solicitud/solicitud-appointment/solicitud-appointment';
 import { authGuard } from './core/guards/auth-guard';
 import { PublicProjectsComponent } from './features/public/project-public/project-public/project-public';
+import { Component } from '@angular/core';
+import { ProgrammerDashboardComponent } from './features/programmer/programmer-dashboard/programmer-dashboard';
 
 export const routes: Routes = [
     {
@@ -40,6 +42,11 @@ export const routes: Routes = [
     },
     {   path: 'programmer/appointments', 
         component: ProgrammerAppointmentsComponent
+    },
+    {
+        path: 'programmer/dashboard',
+        component: ProgrammerDashboardComponent
+
     },
     {
         path:'asesorias',
