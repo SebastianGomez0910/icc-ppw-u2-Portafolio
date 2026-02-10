@@ -1,9 +1,13 @@
-<h2>Dashboard del Programador</h2>
+<section style="margin-top:40px">
+  <h2 style="color:#f59e0b"> Resumen de Asesorías</h2>
 
-<div class="stats">
-  <div>Pendientes: {{ resumen.PENDIENTE }}</div>
-  <div>Aceptadas: {{ resumen.ACEPTADO }}</div>
-  <div>Rechazadas: {{ resumen.RECHAZADO }}</div>
-</div>
+  <div style="max-width:400px; margin-top:30px">
+    <canvas id="dashboardChart"></canvas>
+  </div>
 
-<canvas id="barChart"></canvas>
+  <ul style="margin-top:20px; color:white">
+    <li>Pendientes: {{ summary.PENDIENTE }}</li>
+    <li>Aceptadas: {{ summary.ACEPTADO }}</li>
+    <li>Rechazadas: {{ summary.RECHAZADO }}</li>
+  </ul>
+</section>

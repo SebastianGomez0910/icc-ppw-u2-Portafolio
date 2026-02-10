@@ -1,78 +1,53 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import Chart from 'chart.js/auto';
-import { environment } from '../../../../enviroments/environment';
 import { AppointmentService } from '../../../core/models/appointment';
 
 @Component({
   selector: 'app-programmer-dashboard',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './programmer-dashboard.html'
 })
 export class ProgrammerDashboardComponent implements OnInit {
 
-  constructor(
-    private http: HttpClient,
-    private appointmentService: AppointmentService
-  ) {}
+  private appointmentService = inject(AppointmentService);
 
-
-  resumen = {
+  summary = {
     PENDIENTE: 0,
     ACEPTADO: 0,
     RECHAZADO: 0
   };
 
-  ngOnInit(): void {
-    this.appointmentService.getAppointmentSummary().subscribe(data => {
-      this.resumen = data;
-      this.renderBarChart();
-    });
-  }
-
-  renderBarChart(): void {
-    new Chart('barChart', {
-      type: 'bar',
-      data: {
-        labels: ['Pendientes', 'Aceptadas', 'Rechazadas'],
-        datasets: [{
-          label: 'Citas',
-          data: [
-            this.resumen.PENDIENTE,
-            this.resumen.ACEPTADO,
-            this.resumen.RECHAZADO
-          ],
-          backgroundColor: ['#facc15', '#22c55e', '#ef4444']
-        }]
+  ngOnInit() {
+    this.appointmentService.getAppointmentSummary().subscribe({
+      next: (data) => {
+        this.summary = data;
+        this.renderChart();
       },
-      options: {
-        responsive: true
+      error: (err: any) => {
+        console.error('Error cargando resumen', err);
       }
     });
   }
 
-  renderPieChart(): void {
-    new Chart('pieChart', {
+  renderChart() {
+    const canvas = document.getElementById('dashboardChart') as HTMLCanvasElement;
+    if (!canvas) return;
+
+    new Chart(canvas, {
       type: 'doughnut',
       data: {
         labels: ['Pendientes', 'Aceptadas', 'Rechazadas'],
         datasets: [{
           data: [
-            this.resumen.PENDIENTE,
-            this.resumen.ACEPTADO,
-            this.resumen.RECHAZADO
+            this.summary.PENDIENTE,
+            this.summary.ACEPTADO,
+            this.summary.RECHAZADO
           ],
           backgroundColor: ['#facc15', '#22c55e', '#ef4444']
         }]
       }
     });
-  }
-
-  descargarPdf() {
-    window.open(environment.apiUrl + '/programmer/dashboard/reporte/pdf');
-  }
-
-  descargarExcel() {
-    window.open(environment.apiUrl + '/programmer/dashboard/reporte/excel');
   }
 }
