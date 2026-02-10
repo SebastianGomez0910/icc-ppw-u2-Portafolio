@@ -115,8 +115,13 @@ export class ProgrammerProjectsComponent implements OnInit {
   }
 
   showCenteredMessage(text: string) {
-    this.messageText = text;
-    this.showMessage = true;
-    setTimeout(() => this.showMessage = false, 3000);
-  }
+  this.messageText = text;
+  this.showMessage = true;
+  this.cd.detectChanges();
+
+  setTimeout(() => {
+    this.showMessage = false;
+    this.cd.detectChanges(); 
+  }, 3000);
+}
 }
