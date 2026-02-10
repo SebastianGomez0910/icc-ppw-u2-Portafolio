@@ -1,1 +1,15 @@
-<p>programmer-dashboard works!</p>
+<h2>Dashboard de Programador</h2>
+
+<div class="cards">
+  <div>Pendientes: {{ resumen?.pendientes }}</div>
+  <div>Aprobadas: {{ resumen?.aprobadas }}</div>
+  <div>Rechazadas: {{ resumen?.rechazadas }}</div>
+</div>
+
+<div class="charts">
+  <canvas id="barChart"></canvas>
+  <canvas id="pieChart"></canvas>
+</div>
+
+<button (click)="descargarPdf()">Descargar PDF</button>
+<button (click)="descargarExcel()">Descargar Excel</button>
