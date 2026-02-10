@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../enviroments/environment';
 
 export interface AppointmentSlot {
   id: string;
@@ -19,7 +20,7 @@ export interface AppointmentSlot {
 export class AppointmentService {
 
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api'; 
+  private apiUrl = `${environment.apiUrl}`;
 
   private getHeaders() {
     const token = localStorage.getItem('token'); 
