@@ -27,7 +27,7 @@ export class Register {
     this.authService.register(this.registerData).subscribe({
       next: () => {
         console.log('Usuario registrado con éxito en la base de datos SQL');
-        this.router.navigate(['/auth/login']); 
+        this.router.navigate(['/login']); 
       },
       error: (err) => {
         console.error('Error:', err);
