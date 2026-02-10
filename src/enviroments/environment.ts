@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080/api' 
+  apiUrl: 'https://icc-ppw-u4-portafolio.onrender.com/api'
 };
