@@ -10,6 +10,8 @@ import { RequestAppointmentComponent } from './features/public/solicitud/solicit
 import { authGuard } from './core/guards/auth-guard';
 import { PublicProjectsComponent } from './features/public/project-public/project-public/project-public';
 
+import { ProgrammerDashboardComponent } from './features/programmer/programmer-dashboard/programmer-dashboard';
+
 export const routes: Routes = [
     {
         path:'',
@@ -35,11 +37,17 @@ export const routes: Routes = [
     {   path: 'admin/schedule', 
         component: AdminScheduleComponent 
     },
+    {   path: 'programmer/dashboard', 
+        component: ProgrammerDashboardComponent,
+        canActivate: [authGuard] 
+    },
     {   path: 'programmer/projects', 
-        component: ProgrammerProjectsComponent
+        component: ProgrammerProjectsComponent,
+        canActivate: [authGuard]
     },
     {   path: 'programmer/appointments', 
-        component: ProgrammerAppointmentsComponent
+        component: ProgrammerAppointmentsComponent,
+        canActivate: [authGuard]
     },
     {
         path:'asesorias',

@@ -1,24 +1,24 @@
 <nav class="navbar bg-base-100 shadow-md fixed top-0 w-full z-50" aria-label="Menú Principal">
   
   <div class="navbar-start">
-  
-    
     <div class="dropdown">
       <div tabindex="0" role="button" class="btn btn-ghost lg:hidden" aria-label="Abrir menú de navegación">
-        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" /></svg>
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+        </svg>
       </div>
       <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
         @if (isAdmin) {
           <li><a routerLink="/admin" class="text-primary font-bold">Gestionar Roles</a></li>
           <li><a routerLink="/admin/schedule" class="text-primary font-bold">Gestionar Horarios</a></li>
         } @else if (isProgramer) {
+          <li><a routerLink="/programmer/dashboard" class="font-bold text-primary">Dashboard</a></li>
           <li><a routerLink="/programmer/projects">Mis Proyectos</a></li>
           <li><a routerLink="/programmer/appointments">Mis Citas</a></li>
         } @else {
           <li><a routerLink="/home" (click)="irInicio()">Inicio</a></li>
           <li><a routerLink="/proyectos">Proyectos</a></li>
           <li><a routerLink="/asesorias">Asesorías</a></li>
-          
           @if (user()) {
              <li><a routerLink="/mis-citas" class="font-bold text-primary"> Mis Citas</a></li>
           }
@@ -30,7 +30,7 @@
       <a routerLink="/admin" class="btn btn-ghost text-lg md:text-xl text-red-500 font-bold">Panel Admin</a>
     } 
     @else if (isProgramer) {
-      <a routerLink="/programmer" class="btn btn-ghost text-lg md:text-xl text-yellow-500 font-bold">Panel Dev</a>
+      <a routerLink="/programmer/dashboard" class="btn btn-ghost text-lg md:text-xl text-yellow-500 font-bold">Panel Dev</a>
     }
     @else {
       <a routerLink="/home" (click)="irInicio()" class="btn btn-ghost text-lg md:text-xl">Portafolio</a>
@@ -43,18 +43,16 @@
         <li><a routerLink="/admin" class="font-bold text-primary">Gestionar Roles</a></li>
         <li><a routerLink="/admin/schedule" class="font-bold text-primary">Gestionar Horarios</a></li>
       } @else if (isProgramer) {
+        <li><a routerLink="/programmer/dashboard" class="font-bold text-primary"> Dashboard</a></li>
         <li><a routerLink="/programmer/projects">Mis Proyectos</a></li>
         <li><a routerLink="/programmer/appointments">Mis Citas</a></li>
       } @else {
         <li><a routerLink="/home" (click)="irInicio()">Inicio</a></li>
         <li><a routerLink="/proyectos">Proyectos</a></li>
         <li><a routerLink="/asesorias">Asesorías</a></li>
-        
         @if (user()){
           <li>
-            <a routerLink="/mis-citas" routerLinkActive="active" class="font-semibold">
-               Mis citas
-            </a>
+            <a routerLink="/mis-citas" routerLinkActive="active" class="font-semibold">Mis citas</a>
           </li>
         }
       }
@@ -62,7 +60,6 @@
   </div>
 
   <div class="navbar-end">
-    
     @if (user()) {
       <div class="dropdown dropdown-end">
         <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar" aria-label="Menú de usuario">
@@ -74,9 +71,15 @@
           <li class="menu-title px-4 py-2 text-xs text-gray-500">
              {{ user()?.email }}
           </li>
-          @if (!isAdmin && !isProgramer) {
-             <li><a routerLink="/mis-citas"> Mis Citas</a></li>
+          
+          @if (isProgramer) {
+            <li><a routerLink="/programmer/dashboard" class="font-bold text-primary"> Dashboard</a></li>
+            <li><a routerLink="/programmer/projects">Mis Proyectos</a></li>
+            <li><a routerLink="/programmer/appointments">Mis Citas</a></li>
+          } @else if (!isAdmin) {
+            <li><a routerLink="/mis-citas"> Mis Citas</a></li>
           }
+
           <div class="divider my-0" role="separator"></div>
           <li><button (click)="logout()" class="text-red-500 font-bold">Cerrar Sesión</button></li>
         </ul>
@@ -87,5 +90,4 @@
       </a>
     }
   </div>
-
 </nav>

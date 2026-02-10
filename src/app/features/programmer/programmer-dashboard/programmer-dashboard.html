@@ -1,15 +1,50 @@
-<h2>Dashboard de Programador</h2>
+<div class="p-6 pt-24 min-h-screen bg-base-200">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+      <h2 class="text-3xl font-bold"> Panel de Resumen</h2>
+      
+      <div class="flex gap-2">
+        <button (click)="descargarPdf()" class="btn btn-error btn-outline btn-sm">
+          PDF
+        </button>
+        <button (click)="descargarExcel()" class="btn btn-success btn-outline btn-sm">
+          Excel
+        </button>
+      </div>
+    </div>
 
-<div class="cards">
-  <div>Pendientes: {{ resumen?.pendientes }}</div>
-  <div>Aprobadas: {{ resumen?.aprobadas }}</div>
-  <div>Rechazadas: {{ resumen?.rechazadas }}</div>
+    <div class="stats shadow w-full mb-8 bg-base-100">
+      <div class="stat">
+        <div class="stat-title text-yellow-600 font-semibold">Pendientes</div>
+        <div class="stat-value text-yellow-500">{{resumen.pendientes}}</div>
+        <div class="stat-desc font-medium">Esperando respuesta</div>
+      </div>
+      
+      <div class="stat">
+        <div class="stat-title text-success font-semibold">Aprobadas</div>
+        <div class="stat-value text-success">{{resumen.aprobadas}}</div>
+        <div class="stat-desc font-medium">Listas para asesoría</div>
+      </div>
+      
+      <div class="stat">
+        <div class="stat-title text-error font-semibold">Rechazadas</div>
+        <div class="stat-value text-error">{{resumen.rechazadas}}</div>
+        <div class="stat-desc font-medium">No proceden</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="card bg-base-100 shadow-xl p-6">
+        <h3 class="text-lg font-bold mb-4 text-center">Estado General</h3>
+        <canvas id="barChart"></canvas>
+      </div>
+
+      <div class="card bg-base-100 shadow-xl p-6">
+        <h3 class="text-lg font-bold mb-4 text-center">Distribución Porcentual</h3>
+        <div class="max-w-[280px] mx-auto">
+          <canvas id="pieChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-<div class="charts">
-  <canvas id="barChart"></canvas>
-  <canvas id="pieChart"></canvas>
-</div>
-
-<button (click)="descargarPdf()">Descargar PDF</button>
-<button (click)="descargarExcel()">Descargar Excel</button>
