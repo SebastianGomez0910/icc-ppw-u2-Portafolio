@@ -14,10 +14,14 @@ export const authGuard: CanActivateFn = (route, state) => {
   const expectedRole = route.data['role'];
   const userRole = authService.getRole()?.toUpperCase();
 
-  if (expectedRole && userRole !== expectedRole) {
-    console.warn('Acceso denegado: Se esperaba', expectedRole, 'pero tienes', userRole);
-    router.navigate(['/home']); 
-    return false;
+  if (expectedRole) {
+    const roleToExpect = expectedRole.toUpperCase();
+    
+    if (userRole !== 'ADMIN' && userRole !== roleToExpect) {
+      console.warn(`Acceso denegado: Se esperaba ${roleToExpect} pero el usuario es ${userRole}`);
+      return router.parseUrl('/home'); 
+    }
   }
+
   return true;
 };
