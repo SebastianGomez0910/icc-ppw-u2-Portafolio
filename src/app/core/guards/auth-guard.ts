@@ -7,12 +7,12 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   if (!authService.isLoggedIn()) {
-    alert('Necesitas iniciar sesión primero.');
-    return router.parseUrl('/auth/login');
+    console.warn('Acceso denegado: Usuario no autenticado');
+    return router.parseUrl('/login'); 
   }
 
   const expectedRole = route.data['role'];
-  const userRole = authService.getRole();
+  const userRole = authService.getRole()?.toUpperCase();
 
   if (expectedRole && userRole !== expectedRole) {
     console.warn('Acceso denegado: Se esperaba', expectedRole, 'pero tienes', userRole);
