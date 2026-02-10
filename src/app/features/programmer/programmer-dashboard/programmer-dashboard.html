@@ -1,15 +1,9 @@
-<h2>Dashboard de Programador</h2>
+<h2>Dashboard del Programador</h2>
 
-<div class="cards">
-  <div>Pendientes: {{ resumen?.pendientes }}</div>
-  <div>Aprobadas: {{ resumen?.aprobadas }}</div>
-  <div>Rechazadas: {{ resumen?.rechazadas }}</div>
+<div class="stats">
+  <div>Pendientes: {{ resumen.PENDIENTE }}</div>
+  <div>Aceptadas: {{ resumen.ACEPTADO }}</div>
+  <div>Rechazadas: {{ resumen.RECHAZADO }}</div>
 </div>
 
-<div class="charts">
-  <canvas id="barChart"></canvas>
-  <canvas id="pieChart"></canvas>
-</div>
-
-<button (click)="descargarPdf()">Descargar PDF</button>
-<button (click)="descargarExcel()">Descargar Excel</button>
+<canvas id="barChart"></canvas>

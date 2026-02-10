@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import Chart from 'chart.js/auto';
+import { environment } from '../../../../enviroments/environment';
+import { AppointmentService } from '../../../core/models/appointment';
 
 @Component({
   selector: 'app-programmer-dashboard',
@@ -9,48 +11,56 @@ import Chart from 'chart.js/auto';
 })
 export class ProgrammerDashboardComponent implements OnInit {
 
-  resumen: any;
+  constructor(
+    private http: HttpClient,
+    private appointmentService: AppointmentService
+  ) {}
 
-  constructor(private http: HttpClient) {}
 
-  ngOnInit() {
-    this.http.get<any>('http://localhost:8080/api/programmer/dashboard/resumen')
-      .subscribe(res => {
-        this.resumen = res;
-        setTimeout(() => {
-          this.bar();
-          this.pie();
-        }, 50);
-      });
+  resumen = {
+    PENDIENTE: 0,
+    ACEPTADO: 0,
+    RECHAZADO: 0
+  };
+
+  ngOnInit(): void {
+    this.appointmentService.getAppointmentSummary().subscribe(data => {
+      this.resumen = data;
+      this.renderBarChart();
+    });
   }
 
-  bar() {
+  renderBarChart(): void {
     new Chart('barChart', {
       type: 'bar',
       data: {
-        labels: ['Pendientes', 'Aprobadas', 'Rechazadas'],
+        labels: ['Pendientes', 'Aceptadas', 'Rechazadas'],
         datasets: [{
+          label: 'Citas',
           data: [
-            this.resumen.pendientes,
-            this.resumen.aprobadas,
-            this.resumen.rechazadas
+            this.resumen.PENDIENTE,
+            this.resumen.ACEPTADO,
+            this.resumen.RECHAZADO
           ],
           backgroundColor: ['#facc15', '#22c55e', '#ef4444']
         }]
+      },
+      options: {
+        responsive: true
       }
     });
   }
 
-  pie() {
+  renderPieChart(): void {
     new Chart('pieChart', {
       type: 'doughnut',
       data: {
-        labels: ['Pendientes', 'Aprobadas', 'Rechazadas'],
+        labels: ['Pendientes', 'Aceptadas', 'Rechazadas'],
         datasets: [{
           data: [
-            this.resumen.pendientes,
-            this.resumen.aprobadas,
-            this.resumen.rechazadas
+            this.resumen.PENDIENTE,
+            this.resumen.ACEPTADO,
+            this.resumen.RECHAZADO
           ],
           backgroundColor: ['#facc15', '#22c55e', '#ef4444']
         }]
@@ -59,10 +69,10 @@ export class ProgrammerDashboardComponent implements OnInit {
   }
 
   descargarPdf() {
-    window.open('http://localhost:8080/api/programmer/dashboard/reporte/pdf');
+    window.open(environment.apiUrl + '/programmer/dashboard/reporte/pdf');
   }
 
   descargarExcel() {
-    window.open('http://localhost:8080/api/programmer/dashboard/reporte/excel');
+    window.open(environment.apiUrl + '/programmer/dashboard/reporte/excel');
   }
 }

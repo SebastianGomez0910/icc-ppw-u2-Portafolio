@@ -44,7 +44,7 @@ export class RequestAppointmentComponent implements OnInit {
         this.isLoading = false;
         this.cd.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error cargando programadores', err);
         this.isLoading = false;
       }
@@ -65,7 +65,7 @@ export class RequestAppointmentComponent implements OnInit {
         this.isLoadingSlots = false;
         this.cd.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error cargando horarios', err);
         this.isLoadingSlots = false;
       }
@@ -76,11 +76,11 @@ export class RequestAppointmentComponent implements OnInit {
     let result = [...this.allSlots];
 
     if (this.filterDate) {
-      result = result.filter(slot => slot.date.toString() === this.filterDate);
+      result = result.filter(slot => slot.date === this.filterDate);
     }
 
     if (this.filterTime) {
-      result = result.filter(slot => slot.startTime.toString().includes(this.filterTime));
+      result = result.filter(slot => slot.startTime.includes(this.filterTime));
     }
 
     this.filteredSlots = result;
@@ -88,26 +88,25 @@ export class RequestAppointmentComponent implements OnInit {
   }
 
   book(slot: AppointmentSlot) {
-  if (!this.bookingTopic || this.bookingTopic.trim() === '') {
-    alert('Por favor escribe el motivo de la asesoría antes de reservar.');
-    return;
-  }
+    if (!this.bookingTopic || this.bookingTopic.trim() === '') {
+      alert('Por favor escribe el motivo de la asesoría antes de reservar.');
+      return;
+    }
 
-  if (confirm(`¿Confirmar cita?\n\nFecha: ${slot.date}\nHora: ${slot.startTime}`)) {
-    this.appointmentService
-      .bookSlot(slot.id, this.bookingTopic) // 👈 SOLO STRING
-      .subscribe({
-        next: () => {
-          alert('¡Reservado! Tu cita ha sido agendada con éxito.');
-          this.bookingTopic = '';
-          this.onProgrammerChange();
-        },
-        error: (err) => {
-          console.error(err);
-          alert('Error: No se pudo reservar.');
-        }
-      });
+    if (confirm(`¿Confirmar cita?\n\nFecha: ${slot.date}\nHora: ${slot.startTime}`)) {
+      this.appointmentService
+        .bookSlot(slot.id, this.bookingTopic)
+        .subscribe({
+          next: () => {
+            alert('¡Reservado! Tu cita ha sido agendada con éxito.');
+            this.bookingTopic = '';
+            this.onProgrammerChange();
+          },
+          error: (err: any) => {
+            console.error(err);
+            alert('Error: No se pudo reservar.');
+          }
+        });
+    }
   }
-}
-
 }

@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, HostListener, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-// Asegúrate de importar la nueva interfaz UserProfile que definimos en el servicio
 import { UserService, UserProfile } from '../../../core/services/roles/user-service';
 
 @Component({
