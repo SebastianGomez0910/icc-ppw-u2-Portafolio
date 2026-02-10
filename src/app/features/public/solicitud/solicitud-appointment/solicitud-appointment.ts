@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router'; 
+import { RouterModule } from '@angular/router';
 
 import { UserProfile, UserService } from '../../../../core/services/roles/user-service';
 import { AppointmentService, AppointmentSlot } from '../../../../core/models/appointment';
@@ -9,7 +9,7 @@ import { AppointmentService, AppointmentSlot } from '../../../../core/models/app
 @Component({
   selector: 'app-request-appointment',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule], 
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './solicitud-appointment.html',
 })
 export class RequestAppointmentComponent implements OnInit {
@@ -19,10 +19,10 @@ export class RequestAppointmentComponent implements OnInit {
   private cd = inject(ChangeDetectorRef);
 
   programmers: UserProfile[] = [];
-  
-  allSlots: AppointmentSlot[] = [];      
+
+  allSlots: AppointmentSlot[] = [];
   filteredSlots: AppointmentSlot[] = [];
-  
+
   selectedProgrammerId: string = '';
   bookingTopic: string = '';
   filterDate: string = '';
@@ -33,14 +33,14 @@ export class RequestAppointmentComponent implements OnInit {
   isLoggedIn = false;
 
   ngOnInit() {
-    this.isLoggedIn = !!localStorage.getItem('token'); 
+    this.isLoggedIn = !!localStorage.getItem('token');
     this.loadProgrammers();
   }
 
   loadProgrammers() {
     this.userService.getProgrammers().subscribe({
       next: (users) => {
-        this.programmers = users; 
+        this.programmers = users;
         this.isLoading = false;
         this.cd.detectChanges();
       },
@@ -53,15 +53,15 @@ export class RequestAppointmentComponent implements OnInit {
 
   onProgrammerChange() {
     if (!this.selectedProgrammerId) return;
-    
+
     this.isLoadingSlots = true;
-    this.allSlots = [];      
-    this.filteredSlots = []; 
+    this.allSlots = [];
+    this.filteredSlots = [];
 
     this.appointmentService.getAvailableSlots(this.selectedProgrammerId).subscribe({
       next: (slots) => {
         this.allSlots = slots;
-        this.applyFilters(); 
+        this.applyFilters();
         this.isLoadingSlots = false;
         this.cd.detectChanges();
       },
@@ -84,29 +84,30 @@ export class RequestAppointmentComponent implements OnInit {
     }
 
     this.filteredSlots = result;
-    this.cd.detectChanges(); 
+    this.cd.detectChanges();
   }
 
   book(slot: AppointmentSlot) {
-    if (!this.bookingTopic || this.bookingTopic.trim() === '') {
-        alert('Por favor escribe el motivo de la asesoría antes de reservar.');
-        return;
-    }
-
-    const mensaje = `¿Confirmar cita?\n\nFecha: ${slot.date}\nHora: ${slot.startTime}`;
-    if (confirm(mensaje)) {
-        
-        this.appointmentService.bookSlot(slot.id, this.bookingTopic).subscribe({
-          next: () => {
-            alert('¡Reservado! Tu cita ha sido agendada con éxito.');
-            this.bookingTopic = '';
-            this.onProgrammerChange(); 
-          },
-          error: (err) => {
-            console.error(err);
-            alert('Error: No se pudo reservar. Tal vez alguien te ganó el lugar.');
-          }
-        });
-    }
+  if (!this.bookingTopic || this.bookingTopic.trim() === '') {
+    alert('Por favor escribe el motivo de la asesoría antes de reservar.');
+    return;
   }
+
+  if (confirm(`¿Confirmar cita?\n\nFecha: ${slot.date}\nHora: ${slot.startTime}`)) {
+    this.appointmentService
+      .bookSlot(slot.id, this.bookingTopic) // 👈 SOLO STRING
+      .subscribe({
+        next: () => {
+          alert('¡Reservado! Tu cita ha sido agendada con éxito.');
+          this.bookingTopic = '';
+          this.onProgrammerChange();
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Error: No se pudo reservar.');
+        }
+      });
+  }
+}
+
 }
