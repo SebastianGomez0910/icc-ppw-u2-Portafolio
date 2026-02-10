@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class ValidationService {
 
   static urlValidatorValue(value: string | undefined | null): boolean {
-    if (!value) return true; // opcional: no validar si está vacío
+    if (!value) return true; 
     const pattern = /^(http:\/\/|https:\/\/).+/i;
     return pattern.test(value.trim());
   }

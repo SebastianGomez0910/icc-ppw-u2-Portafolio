@@ -95,7 +95,7 @@ export class RequestAppointmentComponent implements OnInit {
 
   if (confirm(`¿Confirmar cita?\n\nFecha: ${slot.date}\nHora: ${slot.startTime}`)) {
     this.appointmentService
-      .bookSlot(slot.id, this.bookingTopic) // 👈 SOLO STRING
+      .bookSlot(slot.id, this.bookingTopic) 
       .subscribe({
         next: () => {
           alert('¡Reservado! Tu cita ha sido agendada con éxito.');

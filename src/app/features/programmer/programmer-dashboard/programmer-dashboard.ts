@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import Chart from 'chart.js/auto';
+import { environment } from '../../../../enviroments/environment';
 
 @Component({
   selector: 'app-programmer-dashboard',
@@ -14,7 +15,7 @@ export class ProgrammerDashboardComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.http.get<any>('http://localhost:8080/api/programmer/dashboard/resumen')
+    this.http.get<any>(environment.apiUrl + '/programmer/dashboard/resumen')
       .subscribe(res => {
         this.resumen = res;
         setTimeout(() => {
@@ -59,10 +60,10 @@ export class ProgrammerDashboardComponent implements OnInit {
   }
 
   descargarPdf() {
-    window.open('http://localhost:8080/api/programmer/dashboard/reporte/pdf');
+    window.open(environment.apiUrl + '/programmer/dashboard/reporte/pdf');
   }
 
   descargarExcel() {
-    window.open('http://localhost:8080/api/programmer/dashboard/reporte/excel');
+    window.open(environment.apiUrl + '/programmer/dashboard/reporte/excel');
   }
 }

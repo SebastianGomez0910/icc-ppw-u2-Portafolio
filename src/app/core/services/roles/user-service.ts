@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../enviroments/environment';
 
 export interface UserProfile {
   id: string;        
@@ -21,8 +22,8 @@ export class UserService {
   
   private http = inject(HttpClient);
   
-  private apiUrl = 'http://localhost:8080/api/users';
-  private scheduleUrl = 'http://localhost:8080/api/schedules';
+  private apiUrl = environment.apiUrl + '/users';
+  private scheduleUrl = environment.apiUrl + '/schedules';
 
   getAllUsers(): Observable<UserProfile[]> {
     return this.http.get<UserProfile[]>(this.apiUrl);

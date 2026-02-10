@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../enviroments/environment';
 
 export interface Project {
   id?: string;
@@ -24,7 +25,8 @@ export type CreateProjectDto = Omit<Project, 'id'>;
 export class ProjectService {
   private http = inject(HttpClient);
   
-  private apiUrl = 'http://localhost:8080/api/projects';
+
+  private apiUrl = environment.apiUrl + '/projects'; 
 
   private getHeaders() {
     const token = localStorage.getItem('token'); 
