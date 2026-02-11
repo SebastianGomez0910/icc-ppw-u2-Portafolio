@@ -24,11 +24,9 @@ export class ProgrammerAppointmentsComponent implements OnInit {
 
   loadAppointments() {
     this.isLoading = true;
-    
     this.appointmentService.getIncomingAppointments().subscribe({
       next: (data) => {
         this.appointments = data;
-        console.log('Citas cargadas:', data); 
         this.isLoading = false;
         this.cd.detectChanges();
       },
@@ -40,49 +38,25 @@ export class ProgrammerAppointmentsComponent implements OnInit {
     });
   }
 
-  enviarWhatsApp(cita: any) {
-    const nombreCliente = cita.client ? cita.client.name : 'el cliente';
-    alert(`SIMULACIÓN: WhatsApp enviado a ${nombreCliente}.`);
-  }
-
-  enviarCorreo(cita: any) {
-    const nombreCliente = cita.client ? cita.client.name : 'el cliente';
-    alert(`SIMULACIÓN: Correo enviado a ${nombreCliente}.`);
-  }
-
   aceptarCita(cita: any) {
-    const mensajeInput = prompt('Mensaje de confirmación para el cliente (Opcional):');
-    if (mensajeInput === null) return; 
-
     this.appointmentService.updateStatus(cita.id, 'ACCEPTED').subscribe({
       next: () => {
-        alert(' Cita aceptada en el sistema.');
-        
-        if(confirm('¿Deseas simular el envío de WhatsApp?')) this.enviarWhatsApp(cita);
-        if(confirm('¿Deseas simular el envío de Correo?')) this.enviarCorreo(cita);
-        
-        this.loadAppointments();
+        console.log('Cita aceptada y correo real enviado vía Backend');
+        this.loadAppointments(); 
       },
       error: (err) => {
         console.error(err);
-        alert('rror al aceptar la cita.');
+        alert('Error al aceptar la cita.');
       }
     });
   }
 
   rechazarCita(cita: any) {
-    const motivo = prompt('Motivo del rechazo (para simulación de WhatsApp):');
-    if (motivo === null || motivo.trim() === '') {
-        alert('Debes escribir un motivo para rechazar.');
-        return;
-    }
-    
+    if (!confirm('¿Estás seguro de que deseas rechazar esta cita?')) return;
+
     this.appointmentService.updateStatus(cita.id, 'REJECTED').subscribe({
       next: () => {
-        alert('Cita rechazada y horario liberado.');
-
-        if(confirm('¿Simular aviso por WhatsApp al cliente con el motivo?')) this.enviarWhatsApp(cita);
-        
+        console.log('Cita rechazada, horario liberado y correo enviado');
         this.loadAppointments(); 
       },
       error: (err) => {

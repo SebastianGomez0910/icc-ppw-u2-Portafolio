@@ -23,15 +23,15 @@ export class Login {
   errorMessage = '';
 
   redirigirSegunRol(role: string) {
-    const userRole = role.toUpperCase(); 
+    const userRole = role.toUpperCase().trim(); 
     
-    if (userRole === 'ADMIN') {
+    if (userRole.includes('ADMIN')) {
       console.log('Admin detectado. Yendo al panel.');
       this.router.navigate(['/admin']); 
     } 
-    else if (userRole === 'PROGRAMMER'){
+    else if (userRole.includes('PROGRAMMER')){
       console.log('Programador detectado. Yendo al panel.')
-      this.router.navigate(['/programmer/projects'])
+      this.router.navigate(['/programmer/appointments'])
     }
     else {
       console.log('Usuario detectado. Yendo al inicio...');
@@ -51,9 +51,4 @@ export class Login {
         }
       });
   }
-
-  onGoogleLogin() {
-  console.log('Login con Google deshabilitado temporalmente para priorizar JWT según la rúbrica');
-  alert('Esta funcionalidad se activará después. Por ahora usa el correo y contraseña.');
-}
 }

@@ -11,33 +11,32 @@ import { UserService, UserProfile } from '../../../core/services/roles/user-serv
   styleUrl: './home.css',
 })
 export class Home implements OnInit {
-
   private userService = inject(UserService);  
   private cd = inject(ChangeDetectorRef);
   
-  programmers: any[] = []; 
-  isLoading = true;
+  isLoading = false;
 
-  private datosManuales: any = {
-    'sebgomez395@gmail.com': {
+  programmers: any[] = [
+    {
       displayName: 'Sebastian Gómez',
       specialty: 'FULL STACK DEVELOPER',
-      description: 'Especialista en arquitectura frontend con Angular...',
-      photoURL: 'img/fotoS.png', 
+      description: 'Especialista en arquitectura frontend con Angular y diseño de soluciones escalables.',
+      photoURL: 'img/fotoS.png',
       githubUrl: 'https://github.com/SebastianGomez0910',
       whatsappUrl: 'https://wa.me/593978759715'
     },
-    'jeanpierre28.jpvv100@gmail.com': {
+    {
       displayName: 'Jean Pierre Valarezo',
       specialty: 'BACKEND SPECIALIST',
-      description: 'Experto en lógica de servidor...',
+      description: 'Experto en lógica de servidor, Spring Boot y gestión de bases de datos relacionales.',
       photoURL: 'img/fotoJ.png',
       githubUrl: 'https://github.com/jean-pierre-valarezo',
       whatsappUrl: 'https://wa.me/593969382180'
     }
-  };
+  ];
 
   images: string[] = ['img/simpsons.png', 'img/heuristicas.png', 'img/formulario.png'];
+  
   imgDesplazada = 0;
   mostrarBotonArriba = false;
 
@@ -51,35 +50,6 @@ export class Home implements OnInit {
   volverArriba() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
   ngOnInit(): void {
-    this.loadProgrammers();
-  }
-
-  loadProgrammers() {
-    this.userService.getAllUsers().subscribe({
-      next: (allUsers) => {
-        
-        this.programmers = allUsers
-
-          .filter(u => u.role && (u.role.toUpperCase() === 'PROGRAMMER' || u.role.toUpperCase() === 'ADMIN'))
-          .map(user => {
-            console.log('Maquillando usuario para mostrar:', user.email); 
-            
-            const datosExtra = this.datosManuales[user.email] || {};
-            
-            return { 
-              ...user, 
-              ...datosExtra,
-              photoURL: datosExtra.photoURL || 'img/default-user.png' 
-            };
-          });
-
-        this.isLoading = false;
-        this.cd.detectChanges();
-      },
-      error: (err) => {
-        console.error('Error cargando programadores:', err);
-        this.isLoading = false;
-      }
-    });
+    this.isLoading = false;
   }
 }
